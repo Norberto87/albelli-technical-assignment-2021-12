@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Mvc;
+
+using TechnicalAssignment.Data.Models;
+using TechnicalAssignment.Services;
 
 namespace TechnicalAssignment.Controllers
 {
@@ -11,24 +11,27 @@ namespace TechnicalAssignment.Controllers
     [ApiController]
     public class OrdersController : ControllerBase
     {
-        // GET: api/<OrdersController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly IOrdersService ordersService;
+
+        public OrdersController(IOrdersService ordersService)
         {
-            return new string[] { "value1", "value2" };
+            this.ordersService = ordersService;
         }
 
         // GET api/<OrdersController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<ActionResult<OrderWithProductsDto>> GetAsync(int id)
         {
-            return "value";
+            OrderDto order = await ordersService.GetOrderWithProductsAsync(id);
+
+            return Ok(order);
         }
 
         // POST api/<OrdersController>
         [HttpPost]
         public void Post([FromBody] string value)
         {
+
         }
 
         // PUT api/<OrdersController>/5
