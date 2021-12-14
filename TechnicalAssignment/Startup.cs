@@ -1,17 +1,15 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
+using System.IO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using TechnicalAssignment.Data.Persistence;
+using TechnicalAssignment.Services;
 
 namespace TechnicalAssignment
 {
@@ -27,6 +25,8 @@ namespace TechnicalAssignment
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            ConfigureDbContext(services);
+            ConfigureDependencyInjection(services);
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -55,6 +55,24 @@ namespace TechnicalAssignment
             {
                 endpoints.MapControllers();
             });
+        }
+
+        private void ConfigureDbContext(IServiceCollection services)
+        {
+            string connectionString = Configuration.GetConnectionString("MainDatabaseConnectionString");
+
+            services.AddDbContext<TechnicalAssignmentDbContext>(options
+                => options.UseSqlServer(connectionString));
+        }
+
+        private void ConfigureDependencyInjection(IServiceCollection services)
+        {
+            services.AddScoped<ITechnicalAssignmentDbContext, TechnicalAssignmentDbContext>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IOrdersService, OrdersService>();
+            services.AddScoped<IProductsService, ProductsService>();
+
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         }
     }
 }
