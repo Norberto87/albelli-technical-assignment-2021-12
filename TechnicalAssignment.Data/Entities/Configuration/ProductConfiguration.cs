@@ -20,6 +20,7 @@ namespace TechnicalAssignment.Data.Entities.Configuration
                 {
                     Id = (int)ProductType.Calendar,
                     Name = nameof(ProductType.Calendar),
+                    StackSize = 1,
                     Width = 10
                 },
 
@@ -27,6 +28,7 @@ namespace TechnicalAssignment.Data.Entities.Configuration
                 {
                     Id = (int)ProductType.Canvas,
                     Name = nameof(ProductType.Canvas),
+                    StackSize = 1,
                     Width = 16
                 },
 
@@ -34,6 +36,7 @@ namespace TechnicalAssignment.Data.Entities.Configuration
                 {
                     Id = (int)ProductType.Cards,
                     Name = nameof(ProductType.Cards),
+                    StackSize = 1,
                     Width = 4.7f
                 },
 
@@ -41,6 +44,7 @@ namespace TechnicalAssignment.Data.Entities.Configuration
                 {
                     Id = (int)ProductType.Mug,
                     Name = nameof(ProductType.Mug),
+                    StackSize = 4,
                     Width = 94
                 },
 
@@ -48,6 +52,7 @@ namespace TechnicalAssignment.Data.Entities.Configuration
                 {
                     Id = (int)ProductType.PhotoBook,
                     Name = nameof(ProductType.PhotoBook),
+                    StackSize = 1,
                     Width = 19
                 });
         }
