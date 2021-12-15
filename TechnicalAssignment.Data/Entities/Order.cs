@@ -6,7 +6,7 @@ namespace TechnicalAssignment.Data.Entities
     {
         public int Id { get; set; }
 
-        // TODO: add order status column.
+        public int Status { get; set; }
 
         public virtual ICollection<OrderProduct> OrderProducts { get; set; }
     }

@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
+using TechnicalAssignment.Data.Models.Enums;
+
 namespace TechnicalAssignment.Data.Entities.Configuration
 {
     internal class OrderConfiguration : IEntityTypeConfiguration<Order>
@@ -12,17 +14,20 @@ namespace TechnicalAssignment.Data.Entities.Configuration
             builder.HasData(
                 new Order
                 {
-                    Id = 1
+                    Id = 1,
+                    Status = (int)OrderStatusType.Received
                 },
 
                 new Order
                 {
-                    Id = 2
+                    Id = 2,
+                    Status = (int)OrderStatusType.Processing
                 },
 
                 new Order
                 {
-                    Id = 3
+                    Id = 3,
+                    Status = (int)OrderStatusType.Shipped
                 });
         }
     }

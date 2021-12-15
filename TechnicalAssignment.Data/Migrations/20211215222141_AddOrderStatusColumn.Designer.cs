@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TechnicalAssignment.Data.Persistence;
 
@@ -10,9 +11,10 @@ using TechnicalAssignment.Data.Persistence;
 namespace TechnicalAssignment.Data.Migrations
 {
     [DbContext(typeof(TechnicalAssignmentDbContext))]
-    partial class TechnicalAssignmentDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211215222141_AddOrderStatusColumn")]
+    partial class AddOrderStatusColumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -40,17 +42,17 @@ namespace TechnicalAssignment.Data.Migrations
                         new
                         {
                             Id = 1,
-                            Status = 1
+                            Status = 0
                         },
                         new
                         {
                             Id = 2,
-                            Status = 2
+                            Status = 1
                         },
                         new
                         {
                             Id = 3,
-                            Status = 3
+                            Status = 2
                         });
                 });
 
