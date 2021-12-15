@@ -35,5 +35,12 @@ namespace TechnicalAssignment.Data.Persistence.Repositories
 
             return await mapper.ProjectTo<ProductDto>(products).ToListAsync();
         }
+
+        public async Task<HashSet<int>> GetAllProductTypesAsync()
+        {
+            IQueryable<int> productIds = context.Products.AsNoTracking().Select(p => p.Id);
+
+            return new HashSet<int>(await productIds.ToListAsync());
+        }
     }
 }

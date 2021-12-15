@@ -10,5 +10,7 @@ namespace TechnicalAssignment.Data.Persistence.Repositories
         Task<ProductDto> GetAsync(int id);
 
         Task<IEnumerable<ProductDto>> GetAllAsync();
+
+        Task<HashSet<int>> GetAllProductTypesAsync();
     }
 }
