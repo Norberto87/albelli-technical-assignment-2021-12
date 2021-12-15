@@ -22,15 +22,11 @@ namespace TechnicalAssignment.Data.Persistence
 
         public DbSet<OrderProduct> OrderProducts { get; set; }
 
-        public Task<int> SaveChangesAsync()
-        {
-            throw new NotImplementedException();
-        }
-
         // TODO: remove method.
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.LogTo(Console.WriteLine);
+            // Uncomment to debug database operations.
+            //optionsBuilder.LogTo(Console.WriteLine);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

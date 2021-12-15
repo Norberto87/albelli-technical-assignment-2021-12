@@ -53,9 +53,9 @@ namespace TechnicalAssignment.Data.Persistence
             GC.SuppressFinalize(this);
         }
 
-        public Task<int> SaveAsync()
+        public async Task<int> SaveAsync()
         {
-            return context.SaveChangesAsync();
+            return await context.SaveChangesAsync();
         }
 
         protected virtual void Dispose(bool disposing)
