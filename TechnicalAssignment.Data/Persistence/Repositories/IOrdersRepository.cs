@@ -8,5 +8,7 @@ namespace TechnicalAssignment.Data.Persistence.Repositories
         Task<OrderDto> GetAsync(int id);
 
         Task<OrderDto> GetOrderWithProductsAsync(int id);
+
+        Task<OrderWithProductsDto> CreateAsync(OrderWithProductsDto order);
     }
 }

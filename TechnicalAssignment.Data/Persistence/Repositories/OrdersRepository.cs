@@ -54,5 +54,10 @@ namespace TechnicalAssignment.Data.Persistence.Repositories
 
             return await mapper.ProjectTo<OrderDto>(orders).ToListAsync();
         }
+
+        public async Task<OrderWithProductsDto> CreateAsync(OrderWithProductsDto order)
+        {
+            return order;
+        }
     }
 }
