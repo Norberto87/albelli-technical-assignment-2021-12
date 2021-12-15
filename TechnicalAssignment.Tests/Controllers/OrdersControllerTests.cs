@@ -35,7 +35,7 @@ namespace TechnicalAssignment.Tests.Controllers
             Assert.IsNotNull(actionResult);
             Assert.IsNull(actionResult.Value);
 
-            var httpResult = actionResult.Result as NotFoundResult;
+            var httpResult = actionResult.Result as NotFoundObjectResult;
 
             Assert.IsNotNull(httpResult);
             Assert.AreEqual((int)HttpStatusCode.NotFound, httpResult.StatusCode);

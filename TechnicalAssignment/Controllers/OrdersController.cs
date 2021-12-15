@@ -24,12 +24,14 @@ namespace TechnicalAssignment.Controllers
         {
             OrderDto order = await ordersService.GetOrderWithProductsAsync(id);
 
-            return Ok(order);
+            return order != null
+                ? Ok(order)
+                : NotFound("No orders found for the order ID provided.");
         }
 
         // POST api/<OrdersController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public void Post([FromBody] OrderWithProductsDto order)
         {
 
         }
