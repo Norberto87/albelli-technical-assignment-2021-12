@@ -50,6 +50,28 @@ namespace TechnicalAssignment.Services.Tests
         }
 
         [TestMethod]
+        public async Task CreateOrderAsync_ShouldReturnInvalidDataStatusCode_WhenProductIdIsNotValid()
+        {
+            var products = new List<OrderProductDto>();
+            products.Add(new OrderProductDto { Id = 0, Quantity = 1 });
+
+            var result = await service.CreateOrderAsync(new OrderWithProductsDto { Id = 1, Products = products });
+
+            Assert.AreEqual(OperationStatusCode.InvalidData, result.StatusCode);
+        }
+
+        [TestMethod]
+        public async Task CreateOrderAsync_ShouldReturnInvalidDataStatusCode_WhenProductQuantityIsNotValid()
+        {
+            var products = new List<OrderProductDto>();
+            products.Add(new OrderProductDto { Id = 1, Quantity = 0 });
+
+            var result = await service.CreateOrderAsync(new OrderWithProductsDto { Id = 1, Products = products });
+
+            Assert.AreEqual(OperationStatusCode.InvalidData, result.StatusCode);
+        }
+
+        [TestMethod]
         public async Task CreateOrderAsync_ShouldReturnInvalidDataStatusCode_WhenProductsListIsEmpty()
         {
             var result = await service.CreateOrderAsync(new OrderWithProductsDto { Id = 1, Products = new List<OrderProductDto>() });
@@ -63,6 +85,7 @@ namespace TechnicalAssignment.Services.Tests
             unitOfWorkMock.OrdersRepositoryMock.Setup(r => r.GetAsync(It.IsAny<int>())).ReturnsAsync(new OrderWithProductsDto());
 
             var orderWithProducts = GetValidOrderWithProducts();
+
             var result = await service.CreateOrderAsync(orderWithProducts);
 
             Assert.AreEqual(OperationStatusCode.AlreadyExists, result.StatusCode);
