@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 using AutoMapper;
 
@@ -18,6 +19,12 @@ namespace TechnicalAssignment.Data.Models.Mapping
                 .AfterMap((src, dest, context) =>
                 {
                     dest.Products = src.OrderProducts.Select(op => new OrderProductDto { Id = op.ProductId, Quantity = op.Quantity });
+                });
+
+            CreateMap<OrderWithProductsDto, Order>()
+                .AfterMap((src, dest, context) =>
+                {
+                    dest.OrderProducts = src.Products.Select(p => new OrderProduct { OrderId = src.Id, ProductId = p.Id, Quantity = p.Quantity }).ToList();
                 });
         }
     }
