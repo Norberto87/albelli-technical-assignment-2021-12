@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -22,7 +21,10 @@ namespace TechnicalAssignment.Services.Tests
         public void Setup()
         {
             unitOfWorkMock = new UnitOfWorkMock();
-            service = new OrdersService(unitOfWorkMock);
+            service = new OrdersService(unitOfWorkMock.Object);
+
+            unitOfWorkMock.Setup(u => u.OrdersRepository).Returns(unitOfWorkMock.OrdersRepositoryMock.Object);
+            unitOfWorkMock.Setup(u => u.ProductsRepository).Returns(unitOfWorkMock.ProductsRepositoryMock.Object);
         }
 
         [TestMethod]
@@ -84,7 +86,7 @@ namespace TechnicalAssignment.Services.Tests
         {
             unitOfWorkMock.OrdersRepositoryMock.Setup(r => r.GetAsync(It.IsAny<int>())).ReturnsAsync(new OrderWithProductsDto());
 
-            var orderWithProducts = GetValidOrderWithProducts();
+            var orderWithProducts = CreateValidOrderWithProducts();
 
             var result = await service.CreateOrderAsync(orderWithProducts);
 
@@ -102,7 +104,7 @@ namespace TechnicalAssignment.Services.Tests
             Assert.AreEqual(OperationStatusCode.Ok, result.StatusCode);
         }
 
-        private OrderWithProductsDto GetValidOrderWithProducts()
+        private OrderWithProductsDto CreateValidOrderWithProducts()
         {
             var products = new List<OrderProductDto>();
             products.Add(new OrderProductDto { Id = 1, Quantity = 1 });

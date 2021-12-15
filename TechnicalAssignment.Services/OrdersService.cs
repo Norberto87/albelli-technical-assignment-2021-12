@@ -20,7 +20,7 @@ namespace TechnicalAssignment.Services
         /// <inheritdoc/>
         public async Task<OperationResultWithData<OrderWithProductsDto>> CreateOrderAsync(OrderWithProductsDto order)
         {
-            var validationResult = ValidateOrderAndProductsData(order);
+            var validationResult = await ValidateOrderAndProductsData(order);
 
             if (validationResult.StatusCode != OperationStatusCode.Ok)
             {
@@ -33,6 +33,8 @@ namespace TechnicalAssignment.Services
             }
 
             var createdOrder = await unitOfWork.OrdersRepository.CreateAsync(order);
+
+            await unitOfWork.SaveAsync();
 
             return new OperationResultWithData<OrderWithProductsDto>(OperationStatusCode.Ok, createdOrder);
         }
@@ -47,16 +49,16 @@ namespace TechnicalAssignment.Services
             return unitOfWork.OrdersRepository.GetOrderWithProductsAsync(id);
         }
 
-        private OperationResult ValidateOrderAndProductsData(OrderWithProductsDto order)
+        private async Task<OperationResult> ValidateOrderAndProductsData(OrderWithProductsDto order)
         {
-            var orderValidationResult = ValidateOrderData(order);
+            var orderValidationResult = await ValidateOrderData(order);
 
             if (orderValidationResult.StatusCode != OperationStatusCode.Ok)
             {
                 return orderValidationResult;
             }
 
-            var productsValidationResult = ValidateProductsData(order.Products);
+            var productsValidationResult = await ValidateProductsData(order.Products);
 
             if (productsValidationResult.StatusCode != OperationStatusCode.Ok)
             {
@@ -66,7 +68,7 @@ namespace TechnicalAssignment.Services
             return new OperationResult(OperationStatusCode.Ok);
         }
 
-        private OperationResult ValidateOrderData(OrderWithProductsDto order)
+        private async Task<OperationResult> ValidateOrderData(OrderWithProductsDto order)
         {
             if (order == null)
             {
@@ -81,18 +83,20 @@ namespace TechnicalAssignment.Services
             return new OperationResult(OperationStatusCode.Ok);
         }
 
-        private OperationResult ValidateProductsData(IEnumerable<OrderProductDto> products)
+        private async Task<OperationResult> ValidateProductsData(IEnumerable<OrderProductDto> products)
         {
             if (products == null || !products.Any())
             {
                 return new OperationResult(OperationStatusCode.InvalidData, "The order must contain at least one product");
             }
 
+            var availableProductTypes = await unitOfWork.ProductsRepository.GetAllProductTypesAsync();
+
             foreach (var product in products)
             {
-                if (product.Id <= 0)
+                if(!availableProductTypes.Contains(product.Id))
                 {
-                    return new OperationResult(OperationStatusCode.InvalidData, "One or more product IDs are not valid");
+                    return new OperationResult(OperationStatusCode.InvalidData, "One or more product IDs is not valid");
                 }
 
                 if (product.Quantity < 1)

@@ -1,33 +1,39 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
 
 using Moq;
 
 using TechnicalAssignment.Data.Persistence;
-using TechnicalAssignment.Data.Persistence.Repositories;
 
 namespace TechnicalAssignment.Services.Tests.Mocks
 {
-    internal class UnitOfWorkMock : IUnitOfWork
+    internal class UnitOfWorkMock : Mock<IUnitOfWork>
     {
         public UnitOfWorkMock()
         {
             OrdersRepositoryMock = new OrdersRepositoryMock();
+            ProductsRepositoryMock = new ProductsRepositoryMock();
+
+            ConfigureRepositoriesDefaultBehaviour();
         }
 
-        public OrdersRepositoryMock OrdersRepositoryMock;
+        public OrdersRepositoryMock OrdersRepositoryMock { get; set; }
 
-        public IOrdersRepository OrdersRepository => OrdersRepositoryMock.Object;
+        public ProductsRepositoryMock ProductsRepositoryMock { get; set; }
 
-        public IProductsRepository ProductsRepository => throw new System.NotImplementedException();
-
-        public void Dispose()
+        private void ConfigureRepositoriesDefaultBehaviour()
         {
-            throw new System.NotImplementedException();
+            ProductsRepositoryMock.Setup(p => p.GetAllProductTypesAsync()).ReturnsAsync(GetValidProductTypes());
         }
 
-        public Task<int> SaveAsync()
+        private HashSet<int> GetValidProductTypes()
         {
-            throw new System.NotImplementedException();
+            HashSet<int> productTypes = new HashSet<int>();
+            productTypes.Add(1);
+            productTypes.Add(2);
+            productTypes.Add(3);
+
+            return productTypes;
         }
     }
 }

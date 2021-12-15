@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using TechnicalAssignment.Data.Models;
 using TechnicalAssignment.Services;
+using TechnicalAssignment.Services.Models;
 
 namespace TechnicalAssignment.Controllers
 {
@@ -31,9 +32,10 @@ namespace TechnicalAssignment.Controllers
 
         // POST api/<OrdersController>
         [HttpPost]
-        public void Post([FromBody] OrderWithProductsDto order)
+        public async Task<OperationResultWithData<OrderWithProductsDto>> Post([FromBody] OrderWithProductsDto order)
         {
-
+            // TODO: return correct response type.
+            return await ordersService.CreateOrderAsync(order);
         }
 
         // PUT api/<OrdersController>/5

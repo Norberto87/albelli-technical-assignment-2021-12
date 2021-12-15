@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 using TechnicalAssignment.Data.Entities;
 using TechnicalAssignment.Data.Models;
+using TechnicalAssignment.Data.Models.Enums;
 
 namespace TechnicalAssignment.Data.Persistence.Repositories
 {
@@ -22,11 +23,6 @@ namespace TechnicalAssignment.Data.Persistence.Repositories
         {
             this.context = context;
             this.mapper = mapper;
-        }
-
-        public int Add()
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<OrderDto> GetAsync(int id)
@@ -57,6 +53,13 @@ namespace TechnicalAssignment.Data.Persistence.Repositories
 
         public async Task<OrderWithProductsDto> CreateAsync(OrderWithProductsDto order)
         {
+            var orderToAdd = mapper.Map<Order>(order);
+
+            orderToAdd.Status = (int)OrderStatusType.Received;
+
+            await context.Orders.AddAsync(orderToAdd);
+            await context.OrderProducts.AddRangeAsync(orderToAdd.OrderProducts);
+
             return order;
         }
     }
