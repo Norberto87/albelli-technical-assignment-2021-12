@@ -13,7 +13,7 @@ namespace TechnicalAssignment.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1")
+                        //.Annotation("SqlServer:Identity", "1, 1")
                 },
                 constraints: table =>
                 {
