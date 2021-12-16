@@ -30,6 +30,13 @@ namespace TechnicalAssignment.Data.Persistence.Repositories
             return mapper.Map<OrderRequestDto>(order);
         }
 
+        public async Task<OrderStatusDto> GetStatusAsync(int id)
+        {
+            var order = await context.Orders.FindAsync(id);
+
+            return mapper.Map<OrderStatusDto>(order);
+        }
+
         public async Task<IEnumerable<OrderProductDto>> GetOrderProductsAsync(int id)
         {
             var orderProducts = await context.OrderProducts
@@ -41,7 +48,7 @@ namespace TechnicalAssignment.Data.Persistence.Repositories
             return mapper.Map<IEnumerable<OrderProductDto>>(orderProducts);
         }
 
-        public async Task<OrderRequestDto> GetOrderWithProductsAsync(int id)
+        public async Task<OrderResponseWithProductsDto> GetOrderWithProductsAsync(int id)
         {
             var orderWithProducts = await context.Orders
                 .AsNoTracking()
@@ -50,7 +57,7 @@ namespace TechnicalAssignment.Data.Persistence.Repositories
                 .ThenInclude(op => op.Product)
                 .SingleOrDefaultAsync();
 
-            return mapper.Map<OrderRequestWithProductsDto>(orderWithProducts);
+            return mapper.Map<OrderResponseWithProductsDto>(orderWithProducts);
         }
 
         public async Task<IEnumerable<OrderRequestDto>> GetAllAsync()
@@ -62,16 +69,52 @@ namespace TechnicalAssignment.Data.Persistence.Repositories
 
         public async Task<OrderResponseWithProductsDto> CreateAsync(OrderRequestWithProductsDto order)
         {
+            context.SetBulkMode(true);
+
             var orderToAdd = mapper.Map<Order>(order);
 
             orderToAdd.Status = (int)OrderStatusType.Received;
-
-            context.SetBulkMode(true);
 
             await context.Orders.AddAsync(orderToAdd);
             await context.OrderProducts.AddRangeAsync(orderToAdd.OrderProducts);
 
             return mapper.Map<OrderResponseWithProductsDto>(order);
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            context.SetBulkMode(true);
+
+            var orderProducts = await context.OrderProducts.Where(op => op.OrderId == id).ToListAsync();
+
+            foreach (var product in orderProducts)
+            {
+                if (context.Entry(product).State == EntityState.Detached)
+                {
+                    context.OrderProducts.Attach(product);
+                }
+
+                context.OrderProducts.Remove(product);
+            }
+
+            var order = await context.Orders.SingleOrDefaultAsync(o => o.Id == id);
+
+            if(context.Entry(order).State == EntityState.Detached)
+            {
+                context.Orders.Attach(order);
+            }
+
+            context.Orders.Remove(order);
+        }
+
+        public async Task UpdateStatusAsync(OrderStatusDto order)
+        {
+            var entity = await context.Orders.FindAsync(order.Id);
+
+            entity = mapper.Map(order, entity);
+
+            context.Orders.Attach(entity);
+            context.Entry(entity).State = EntityState.Modified;
         }
     }
 }

@@ -9,8 +9,12 @@ namespace TechnicalAssignment.Services
     {
         Task<OperationResultWithData<OrderResponseWithProductsDto>> CreateOrderAsync(OrderRequestWithProductsDto order);
 
-        Task<OrderRequestDto> GetOrderAsync(int id);
+        Task<OperationResultWithData<OrderResponseWithProductsDto>> GetOrderWithProductsAsync(int id);
 
-        Task<OrderRequestDto> GetOrderWithProductsAsync(int id);
+        Task<OperationResultWithData<OrderStatusDto>> GetOrderStatusAsync(int id);
+
+        Task<OperationResult> DeleteOrderAsync(int id);
+
+        Task<OperationResult> UpdateOrderStatusAsync(OrderStatusDto order);
     }
 }

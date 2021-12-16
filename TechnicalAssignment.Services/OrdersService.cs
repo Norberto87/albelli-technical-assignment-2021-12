@@ -40,14 +40,70 @@ namespace TechnicalAssignment.Services
             return new OperationResultWithData<OrderResponseWithProductsDto>(OperationStatusCode.Ok, await ProcessOrderProducts(createdOrder));
         }
 
-        public Task<OrderRequestDto> GetOrderAsync(int id)
+        /// <inheritdoc/>
+        public async Task<OperationResultWithData<OrderResponseWithProductsDto>> GetOrderWithProductsAsync(int id)
         {
-            return unitOfWork.OrdersRepository.GetAsync(id);
+            var order = await unitOfWork.OrdersRepository.GetOrderWithProductsAsync(id);
+
+            if (order == null)
+            {
+                return new OperationResultWithData<OrderResponseWithProductsDto> { StatusCode = OperationStatusCode.NotFound };
+            }
+
+            return new OperationResultWithData<OrderResponseWithProductsDto>(OperationStatusCode.Ok, await ProcessOrderProducts(order));
         }
 
-        public Task<OrderRequestDto> GetOrderWithProductsAsync(int id)
+        /// <inheritdoc/>
+        public async Task<OperationResultWithData<OrderStatusDto>> GetOrderStatusAsync(int id)
         {
-            return unitOfWork.OrdersRepository.GetOrderWithProductsAsync(id);
+            var orderStatus = await unitOfWork.OrdersRepository.GetStatusAsync(id);
+
+            if(orderStatus == null)
+            {
+                return new OperationResultWithData<OrderStatusDto> { StatusCode = OperationStatusCode.NotFound };
+            }
+
+            return new OperationResultWithData<OrderStatusDto>(OperationStatusCode.Ok, orderStatus);
+        }
+
+        /// <inheritdoc/>
+        public async Task<OperationResult> DeleteOrderAsync(int id)
+        {
+            if (id <= 0)
+            {
+                return new OperationResult(OperationStatusCode.InvalidData, "The order ID provided is not valid");
+            }
+
+            if (await unitOfWork.OrdersRepository.GetAsync(id) == null)
+            {
+                return new OperationResult(OperationStatusCode.NotFound, "The order ID provided does not exist");
+            }
+
+            await unitOfWork.OrdersRepository.DeleteAsync(id);
+
+            await unitOfWork.SaveAsync();
+
+            return new OperationResult(OperationStatusCode.Ok);
+        }
+
+        /// <inheritdoc/>
+        public async Task<OperationResult> UpdateOrderStatusAsync(OrderStatusDto order)
+        {
+            if (order.Id <= 0)
+            {
+                return new OperationResult(OperationStatusCode.InvalidData, "The order ID provided is not valid");
+            }
+
+            if (await unitOfWork.OrdersRepository.GetAsync(order.Id) == null)
+            {
+                return new OperationResult(OperationStatusCode.NotFound, "The order does not exist");
+            }
+
+            await unitOfWork.OrdersRepository.UpdateStatusAsync(order);
+
+            await unitOfWork.SaveAsync();
+
+            return new OperationResult(OperationStatusCode.Ok);
         }
 
         private async Task<OrderResponseWithProductsDto> ProcessOrderProducts(OrderResponseWithProductsDto order)
@@ -123,7 +179,7 @@ namespace TechnicalAssignment.Services
 
             foreach (var product in products)
             {
-                if(!availableProductTypes.Contains(product.Id))
+                if (!availableProductTypes.Contains(product.Id))
                 {
                     return new OperationResult(OperationStatusCode.InvalidData, "One or more product IDs is not valid");
                 }
