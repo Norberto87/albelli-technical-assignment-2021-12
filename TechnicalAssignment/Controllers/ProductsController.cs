@@ -25,7 +25,7 @@ namespace TechnicalAssignment.Controllers
         [HttpGet]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(IEnumerable<ProductDto>))]
         [ProducesResponseType((int)HttpStatusCode.NotFound, Type = typeof(ActionResult))]
-        public async Task<ActionResult<IEnumerable<ProductDto>>> GetAsync()
+        public async Task<ActionResult<IEnumerable<ProductDto>>> GetAllAsync()
         {
             IEnumerable<ProductDto> products = await productsService.GetAllProductsAsync();
 

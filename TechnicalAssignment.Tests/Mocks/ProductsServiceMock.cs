@@ -4,7 +4,7 @@ using TechnicalAssignment.Services;
 
 namespace TechnicalAssignment.Tests.Mocks
 {
-    internal class OrdersServiceMock : Mock<IOrdersService>
+    internal class ProductsServiceMock : Mock<IProductsService>
     {
     }
 }

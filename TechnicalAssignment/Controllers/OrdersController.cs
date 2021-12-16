@@ -35,7 +35,7 @@ namespace TechnicalAssignment.Controllers
         [HttpGet("{id}/status")]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(OrderStatusDto))]
         [ProducesResponseType((int)HttpStatusCode.NotFound, Type = typeof(ActionResult))]
-        public async Task<ActionResult<OrderStatusDto>> GetOrderStatusAsync(int id)
+        public async Task<ActionResult<OrderStatusDto>> GetStatusAsync(int id)
         {
             var result = await ordersService.GetOrderStatusAsync(id);
 
@@ -47,7 +47,7 @@ namespace TechnicalAssignment.Controllers
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(OrderRequestWithProductsDto))]
         [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ActionResult))]
-        public async Task<ActionResult<OrderResponseWithProductsDto>> Post([FromBody] OrderRequestWithProductsDto order)
+        public async Task<ActionResult<OrderResponseWithProductsDto>> PostAsync([FromBody] OrderRequestWithProductsDto order)
         {
             var result = await ordersService.CreateOrderAsync(order);
 
@@ -59,7 +59,7 @@ namespace TechnicalAssignment.Controllers
         [HttpPut("status")]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(OrderStatusDto))]
         [ProducesResponseType((int)HttpStatusCode.NotFound, Type = typeof(ActionResult))]
-        public async Task<ActionResult> Put([FromBody] OrderStatusDto order)
+        public async Task<ActionResult> PutAsync([FromBody] OrderStatusDto order)
         {
             var result = await ordersService.UpdateOrderStatusAsync(order);
 
@@ -71,7 +71,7 @@ namespace TechnicalAssignment.Controllers
         [HttpDelete("{id}")]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ActionResult))]
         [ProducesResponseType((int)HttpStatusCode.NotFound, Type = typeof(ActionResult))]
-        public async Task<ActionResult> Delete(int id)
+        public async Task<ActionResult> DeleteAsync(int id)
         {
             var result = await ordersService.DeleteOrderAsync(id);
 

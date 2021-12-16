@@ -68,7 +68,7 @@ namespace TechnicalAssignment.Tests.Controllers
             int orderId = 1;
             service.Setup(s => s.GetOrderStatusAsync(It.IsAny<int>())).ReturnsAsync(() => new OperationResultWithData<OrderStatusDto>() { StatusCode = OperationStatusCode.NotFound });
 
-            var result = await controller.GetOrderStatusAsync(orderId);
+            var result = await controller.GetStatusAsync(orderId);
 
             Assert.IsNotNull(result);
 
@@ -84,7 +84,7 @@ namespace TechnicalAssignment.Tests.Controllers
             int orderId = 1;
             service.Setup(s => s.GetOrderStatusAsync(It.IsAny<int>())).ReturnsAsync(() => new OperationResultWithData<OrderStatusDto>() { Data = new OrderStatusDto { OrderId = orderId } });
 
-            var result = await controller.GetOrderStatusAsync(orderId);
+            var result = await controller.GetStatusAsync(orderId);
 
             Assert.IsNotNull(result);
 
@@ -104,7 +104,7 @@ namespace TechnicalAssignment.Tests.Controllers
         {
             service.Setup(s => s.CreateOrderAsync(It.IsAny<OrderRequestWithProductsDto>())).ReturnsAsync(() => new OperationResultWithData<OrderResponseWithProductsDto> { StatusCode = OperationStatusCode.InvalidData });
 
-            var result = await controller.Post(new OrderRequestWithProductsDto());
+            var result = await controller.PostAsync(new OrderRequestWithProductsDto());
 
             Assert.IsNotNull(result);
 
@@ -120,7 +120,7 @@ namespace TechnicalAssignment.Tests.Controllers
             int orderId = 1;
             service.Setup(s => s.CreateOrderAsync(It.IsAny<OrderRequestWithProductsDto>())).ReturnsAsync(() => new OperationResultWithData<OrderResponseWithProductsDto>(OperationStatusCode.Ok, new OrderResponseWithProductsDto { OrderId = orderId }));
 
-            var result = await controller.Post(new OrderRequestWithProductsDto());
+            var result = await controller.PostAsync(new OrderRequestWithProductsDto());
 
             Assert.IsNotNull(result);
 
@@ -140,7 +140,7 @@ namespace TechnicalAssignment.Tests.Controllers
         {
             service.Setup(s => s.UpdateOrderStatusAsync(It.IsAny<OrderStatusDto>())).ReturnsAsync(() => new OperationResult(OperationStatusCode.NotFound));
 
-            var result = await controller.Put(new OrderStatusDto());
+            var result = await controller.PutAsync(new OrderStatusDto());
 
             Assert.IsNotNull(result);
 
@@ -155,7 +155,7 @@ namespace TechnicalAssignment.Tests.Controllers
         {
             service.Setup(s => s.UpdateOrderStatusAsync(It.IsAny<OrderStatusDto>())).ReturnsAsync(() => new OperationResult(OperationStatusCode.Ok));
 
-            var result = await controller.Put(new OrderStatusDto());
+            var result = await controller.PutAsync(new OrderStatusDto());
 
             Assert.IsNotNull(result);
 
@@ -170,7 +170,7 @@ namespace TechnicalAssignment.Tests.Controllers
         {
             service.Setup(s => s.DeleteOrderAsync(It.IsAny<int>())).ReturnsAsync(() => new OperationResult(OperationStatusCode.NotFound));
 
-            var result = await controller.Delete(1);
+            var result = await controller.DeleteAsync(1);
 
             Assert.IsNotNull(result);
 
@@ -185,7 +185,7 @@ namespace TechnicalAssignment.Tests.Controllers
         {
             service.Setup(s => s.DeleteOrderAsync(It.IsAny<int>())).ReturnsAsync(() => new OperationResult(OperationStatusCode.Ok));
 
-            var result = await controller.Delete(1);
+            var result = await controller.DeleteAsync(1);
 
             Assert.IsNotNull(result);
 
