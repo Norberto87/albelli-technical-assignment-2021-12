@@ -11,11 +11,13 @@ namespace TechnicalAssignment.Data.Entities.Configuration
 
             builder.HasOne(op => op.Order)
                 .WithMany(o => o.OrderProducts)
-                .HasForeignKey(op => op.OrderId);
+                .HasForeignKey(op => op.OrderId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne(op => op.Product)
                 .WithMany(p => p.OrderProducts)
-                .HasForeignKey(op => op.ProductId);
+                .HasForeignKey(op => op.ProductId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasData(
                 new OrderProduct
