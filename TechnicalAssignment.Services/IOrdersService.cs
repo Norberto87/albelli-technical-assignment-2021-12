@@ -7,10 +7,10 @@ namespace TechnicalAssignment.Services
 {
     public interface IOrdersService
     {
-        Task<OperationResultWithData<OrderWithProductsDto>> CreateOrderAsync(OrderWithProductsDto order);
+        Task<OperationResultWithData<OrderResponseWithProductsDto>> CreateOrderAsync(OrderRequestWithProductsDto order);
 
-        Task<OrderDto> GetOrderAsync(int id);
+        Task<OrderRequestDto> GetOrderAsync(int id);
 
-        Task<OrderDto> GetOrderWithProductsAsync(int id);
+        Task<OrderRequestDto> GetOrderWithProductsAsync(int id);
     }
 }

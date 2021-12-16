@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -18,40 +19,68 @@ namespace TechnicalAssignment.Services
         }
 
         /// <inheritdoc/>
-        public async Task<OperationResultWithData<OrderWithProductsDto>> CreateOrderAsync(OrderWithProductsDto order)
+        public async Task<OperationResultWithData<OrderResponseWithProductsDto>> CreateOrderAsync(OrderRequestWithProductsDto order)
         {
             var validationResult = await ValidateOrderAndProductsData(order);
 
             if (validationResult.StatusCode != OperationStatusCode.Ok)
             {
-                return new OperationResultWithData<OrderWithProductsDto>(validationResult, order);
+                return new OperationResultWithData<OrderResponseWithProductsDto>(validationResult);
             }
 
             if (await unitOfWork.OrdersRepository.GetAsync(order.Id) != null)
             {
-                return new OperationResultWithData<OrderWithProductsDto>(OperationStatusCode.AlreadyExists, order);
+                return new OperationResultWithData<OrderResponseWithProductsDto> { StatusCode = OperationStatusCode.AlreadyExists };
             }
 
             var createdOrder = await unitOfWork.OrdersRepository.CreateAsync(order);
 
             await unitOfWork.SaveAsync();
 
-            return new OperationResultWithData<OrderWithProductsDto>(OperationStatusCode.Ok, createdOrder);
+            return new OperationResultWithData<OrderResponseWithProductsDto>(OperationStatusCode.Ok, await ProcessOrderProducts(createdOrder));
         }
 
-        public Task<OrderDto> GetOrderAsync(int id)
+        public Task<OrderRequestDto> GetOrderAsync(int id)
         {
             return unitOfWork.OrdersRepository.GetAsync(id);
         }
 
-        public Task<OrderDto> GetOrderWithProductsAsync(int id)
+        public Task<OrderRequestDto> GetOrderWithProductsAsync(int id)
         {
             return unitOfWork.OrdersRepository.GetOrderWithProductsAsync(id);
         }
 
-        private async Task<OperationResult> ValidateOrderAndProductsData(OrderWithProductsDto order)
+        private async Task<OrderResponseWithProductsDto> ProcessOrderProducts(OrderResponseWithProductsDto order)
         {
-            var orderValidationResult = await ValidateOrderData(order);
+            IEnumerable<OrderProductDto> orderProducts = await unitOfWork.OrdersRepository.GetOrderProductsAsync(order.Id);
+
+            order.Products = new List<OrderResponseProductDto>(orderProducts.Select(p =>
+            {
+                OrderResponseProductDto product = new OrderResponseProductDto
+                {
+                    Id = p.Id,
+                    Quantity = p.Quantity,
+                    RequiredWidth = p.Width * GetStacks(p.Quantity, p.StackSize)
+                };
+
+                order.RequiredWidth += product.RequiredWidth;
+
+                return product;
+            }).ToList());
+
+            return order;
+        }
+
+        private int GetStacks(int quantity, int stackSize)
+        {
+            return stackSize == 1
+                ? quantity
+                : (int)Math.Ceiling((float)quantity / stackSize);
+        }
+
+        private async Task<OperationResult> ValidateOrderAndProductsData(OrderRequestWithProductsDto order)
+        {
+            var orderValidationResult = ValidateOrderData(order);
 
             if (orderValidationResult.StatusCode != OperationStatusCode.Ok)
             {
@@ -68,7 +97,7 @@ namespace TechnicalAssignment.Services
             return new OperationResult(OperationStatusCode.Ok);
         }
 
-        private async Task<OperationResult> ValidateOrderData(OrderWithProductsDto order)
+        private OperationResult ValidateOrderData(OrderRequestWithProductsDto order)
         {
             if (order == null)
             {
@@ -83,7 +112,7 @@ namespace TechnicalAssignment.Services
             return new OperationResult(OperationStatusCode.Ok);
         }
 
-        private async Task<OperationResult> ValidateProductsData(IEnumerable<OrderProductDto> products)
+        private async Task<OperationResult> ValidateProductsData(IEnumerable<OrderRequestProductDto> products)
         {
             if (products == null || !products.Any())
             {

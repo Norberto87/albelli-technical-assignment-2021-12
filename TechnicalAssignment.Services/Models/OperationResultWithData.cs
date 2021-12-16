@@ -7,6 +7,11 @@
 
         }
 
+        public OperationResultWithData(OperationResult operationResult)
+            : this(operationResult.StatusCode, operationResult.Message, default)
+        {
+        }
+
         public OperationResultWithData(OperationResult operationResult, T data)
             : this(operationResult.StatusCode, operationResult.Message, data)
         {

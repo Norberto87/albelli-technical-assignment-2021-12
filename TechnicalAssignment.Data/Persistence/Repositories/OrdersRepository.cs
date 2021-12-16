@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 using AutoMapper;
@@ -25,14 +23,25 @@ namespace TechnicalAssignment.Data.Persistence.Repositories
             this.mapper = mapper;
         }
 
-        public async Task<OrderDto> GetAsync(int id)
+        public async Task<OrderRequestDto> GetAsync(int id)
         {
             var order = await context.Orders.FindAsync(id);
 
-            return mapper.Map<OrderDto>(order);
+            return mapper.Map<OrderRequestDto>(order);
         }
 
-        public async Task<OrderDto> GetOrderWithProductsAsync(int id)
+        public async Task<IEnumerable<OrderProductDto>> GetOrderProductsAsync(int id)
+        {
+            var orderProducts = await context.OrderProducts
+                .AsNoTracking()
+                .Where(o => o.OrderId == id)
+                .Include(op => op.Product)
+                .ToListAsync();
+
+            return mapper.Map<IEnumerable<OrderProductDto>>(orderProducts);
+        }
+
+        public async Task<OrderRequestDto> GetOrderWithProductsAsync(int id)
         {
             var orderWithProducts = await context.Orders
                 .AsNoTracking()
@@ -41,17 +50,17 @@ namespace TechnicalAssignment.Data.Persistence.Repositories
                 .ThenInclude(op => op.Product)
                 .SingleOrDefaultAsync();
 
-            return mapper.Map<OrderWithProductsDto>(orderWithProducts);
+            return mapper.Map<OrderRequestWithProductsDto>(orderWithProducts);
         }
 
-        public async Task<IEnumerable<OrderDto>> GetAllAsync()
+        public async Task<IEnumerable<OrderRequestDto>> GetAllAsync()
         {
             IQueryable<Order> orders = context.Orders.AsNoTracking();
 
-            return await mapper.ProjectTo<OrderDto>(orders).ToListAsync();
+            return await mapper.ProjectTo<OrderRequestDto>(orders).ToListAsync();
         }
 
-        public async Task<OrderWithProductsDto> CreateAsync(OrderWithProductsDto order)
+        public async Task<OrderResponseWithProductsDto> CreateAsync(OrderRequestWithProductsDto order)
         {
             var orderToAdd = mapper.Map<Order>(order);
 
@@ -60,7 +69,7 @@ namespace TechnicalAssignment.Data.Persistence.Repositories
             await context.Orders.AddAsync(orderToAdd);
             await context.OrderProducts.AddRangeAsync(orderToAdd.OrderProducts);
 
-            return order;
+            return mapper.Map<OrderResponseWithProductsDto>(order);
         }
     }
 }

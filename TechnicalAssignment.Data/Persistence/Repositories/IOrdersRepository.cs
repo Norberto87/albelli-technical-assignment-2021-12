@@ -1,14 +1,17 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using TechnicalAssignment.Data.Models;
 
 namespace TechnicalAssignment.Data.Persistence.Repositories
 {
     public interface IOrdersRepository
     {
-        Task<OrderDto> GetAsync(int id);
+        Task<OrderRequestDto> GetAsync(int id);
 
-        Task<OrderDto> GetOrderWithProductsAsync(int id);
+        Task<IEnumerable<OrderProductDto>> GetOrderProductsAsync(int id);
 
-        Task<OrderWithProductsDto> CreateAsync(OrderWithProductsDto order);
+        Task<OrderRequestDto> GetOrderWithProductsAsync(int id);
+
+        Task<OrderResponseWithProductsDto> CreateAsync(OrderRequestWithProductsDto order);
     }
 }

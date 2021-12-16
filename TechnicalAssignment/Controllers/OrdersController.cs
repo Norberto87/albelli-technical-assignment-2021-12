@@ -21,9 +21,9 @@ namespace TechnicalAssignment.Controllers
 
         // GET api/<OrdersController>/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<OrderWithProductsDto>> GetAsync(int id)
+        public async Task<ActionResult<OrderRequestWithProductsDto>> GetAsync(int id)
         {
-            OrderDto order = await ordersService.GetOrderWithProductsAsync(id);
+            OrderRequestDto order = await ordersService.GetOrderWithProductsAsync(id);
 
             return order != null
                 ? Ok(order)
@@ -32,10 +32,13 @@ namespace TechnicalAssignment.Controllers
 
         // POST api/<OrdersController>
         [HttpPost]
-        public async Task<OperationResultWithData<OrderWithProductsDto>> Post([FromBody] OrderWithProductsDto order)
+        public async Task<ActionResult<OrderResponseWithProductsDto>> Post([FromBody] OrderRequestWithProductsDto order)
         {
-            // TODO: return correct response type.
-            return await ordersService.CreateOrderAsync(order);
+            var result = await ordersService.CreateOrderAsync(order);
+
+            return result.StatusCode == OperationStatusCode.Ok
+                ? Ok(result.Data)
+                : BadRequest(result.Message);
         }
 
         // PUT api/<OrdersController>/5
