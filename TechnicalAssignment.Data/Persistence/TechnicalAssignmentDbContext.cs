@@ -27,7 +27,10 @@ namespace TechnicalAssignment.Data.Persistence
         {
             var result = await base.SaveChangesAsync(cancellationToken);
 
-            ChangeTracker.AutoDetectChangesEnabled = true;
+            if (!ChangeTracker.AutoDetectChangesEnabled)
+            {
+                ChangeTracker.AutoDetectChangesEnabled = true;
+            }
 
             return result;
         }
