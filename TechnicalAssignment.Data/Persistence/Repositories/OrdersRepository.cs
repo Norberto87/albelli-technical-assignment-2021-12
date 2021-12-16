@@ -12,17 +12,26 @@ using TechnicalAssignment.Data.Models.Enums;
 
 namespace TechnicalAssignment.Data.Persistence.Repositories
 {
+    /// <summary>
+    /// Implements an orders repository.
+    /// </summary>
     internal class OrdersRepository : IOrdersRepository
     {
         private readonly ITechnicalAssignmentDbContext context;
         private readonly IMapper mapper;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OrdersRepository"/> class.
+        /// </summary>
+        /// <param name="context">DB context.</param>
+        /// <param name="mapper">AutoMapper data mapper.</param>
         public OrdersRepository(ITechnicalAssignmentDbContext context, IMapper mapper)
         {
             this.context = context;
             this.mapper = mapper;
         }
 
+        /// <inheritdoc/>
         public async Task<OrderRequestDto> GetAsync(int id)
         {
             var order = await context.Orders.FindAsync(id);
@@ -30,6 +39,7 @@ namespace TechnicalAssignment.Data.Persistence.Repositories
             return mapper.Map<OrderRequestDto>(order);
         }
 
+        /// <inheritdoc/>
         public async Task<OrderStatusDto> GetStatusAsync(int id)
         {
             var order = await context.Orders.FindAsync(id);
@@ -37,6 +47,7 @@ namespace TechnicalAssignment.Data.Persistence.Repositories
             return mapper.Map<OrderStatusDto>(order);
         }
 
+        /// <inheritdoc/>
         public async Task<IEnumerable<OrderProductDto>> GetOrderProductsAsync(int id)
         {
             var orderProducts = await context.OrderProducts
@@ -48,6 +59,7 @@ namespace TechnicalAssignment.Data.Persistence.Repositories
             return mapper.Map<IEnumerable<OrderProductDto>>(orderProducts);
         }
 
+        /// <inheritdoc/>
         public async Task<OrderResponseWithProductsDto> GetOrderWithProductsAsync(int id)
         {
             var orderWithProducts = await context.Orders
@@ -60,13 +72,7 @@ namespace TechnicalAssignment.Data.Persistence.Repositories
             return mapper.Map<OrderResponseWithProductsDto>(orderWithProducts);
         }
 
-        public async Task<IEnumerable<OrderRequestDto>> GetAllAsync()
-        {
-            IQueryable<Order> orders = context.Orders.AsNoTracking();
-
-            return await mapper.ProjectTo<OrderRequestDto>(orders).ToListAsync();
-        }
-
+        /// <inheritdoc/>
         public async Task<OrderResponseWithProductsDto> CreateAsync(OrderRequestWithProductsDto order)
         {
             context.SetBulkMode(true);
@@ -81,6 +87,7 @@ namespace TechnicalAssignment.Data.Persistence.Repositories
             return mapper.Map<OrderResponseWithProductsDto>(order);
         }
 
+        /// <inheritdoc/>
         public async Task DeleteAsync(int id)
         {
             context.SetBulkMode(true);
@@ -107,6 +114,7 @@ namespace TechnicalAssignment.Data.Persistence.Repositories
             context.Orders.Remove(order);
         }
 
+        /// <inheritdoc/>
         public async Task UpdateStatusAsync(OrderStatusDto order)
         {
             var entity = await context.Orders.SingleAsync(o => o.Id == order.OrderId);

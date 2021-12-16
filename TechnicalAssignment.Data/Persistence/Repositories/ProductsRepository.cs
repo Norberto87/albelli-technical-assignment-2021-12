@@ -12,17 +12,26 @@ using TechnicalAssignment.Data.Models.Enums;
 
 namespace TechnicalAssignment.Data.Persistence.Repositories
 {
+    /// <summary>
+    /// Implements a products repository.
+    /// </summary>
     internal class ProductsRepository : IProductsRepository
     {
         private readonly ITechnicalAssignmentDbContext context;
         private readonly IMapper mapper;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ProductsRepository"/> class.
+        /// </summary>
+        /// <param name="context">DB context.</param>
+        /// <param name="mapper">AutoMapper data mapper.</param>
         public ProductsRepository(ITechnicalAssignmentDbContext context, IMapper mapper)
         {
             this.context = context;
             this.mapper = mapper;
         }
 
+        /// <inheritdoc/>
         public async Task<ProductDto> GetAsync(ProductType id)
         {
             Product product = await context.Products.FindAsync(id);
@@ -30,13 +39,7 @@ namespace TechnicalAssignment.Data.Persistence.Repositories
             return mapper.Map<ProductDto>(product);
         }
 
-        public async Task<ProductDto> GetAsync(string name)
-        {
-            Product product = await context.Products.SingleOrDefaultAsync(p => p.Name == name);
-
-            return mapper.Map<ProductDto>(product);
-        }
-
+        /// <inheritdoc/>
         public async Task<IEnumerable<ProductDto>> GetAllAsync()
         {
             IQueryable<Product> products = context.Products.AsNoTracking();
@@ -44,6 +47,7 @@ namespace TechnicalAssignment.Data.Persistence.Repositories
             return await mapper.ProjectTo<ProductDto>(products).ToListAsync();
         }
 
+        /// <inheritdoc/>
         public async Task<HashSet<ProductType>> GetAllProductTypesAsync()
         {
             IQueryable<ProductType> productIds = context.Products.AsNoTracking().Select(p => p.Id);

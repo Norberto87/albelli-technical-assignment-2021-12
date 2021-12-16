@@ -10,10 +10,17 @@ using TechnicalAssignment.Services.Models;
 
 namespace TechnicalAssignment.Services
 {
+    /// <summary>
+    /// Implements order services.
+    /// </summary>
     public class OrdersService : IOrdersService
     {
         private readonly IUnitOfWork unitOfWork;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OrdersService"/> class.
+        /// </summary>
+        /// <param name="unitOfWork">Unit of work.</param>
         public OrdersService(IUnitOfWork unitOfWork)
         {
             this.unitOfWork = unitOfWork;

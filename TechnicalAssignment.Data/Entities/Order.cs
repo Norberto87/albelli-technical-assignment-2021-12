@@ -19,6 +19,9 @@ namespace TechnicalAssignment.Data.Entities
         /// </summary>
         public OrderStatusType Status { get; set; }
 
+        /// <summary>
+        /// Gets or sets the order products.
+        /// </summary>
         public virtual ICollection<OrderProduct> OrderProducts { get; set; }
     }
 }

@@ -6,8 +6,14 @@ using TechnicalAssignment.Data.Entities;
 
 namespace TechnicalAssignment.Data.Models.Mapping
 {
+    /// <summary>
+    /// Implements the mappings used to map different classes using AutoMapper.
+    /// </summary>
     internal class MappingProfileDefault : Profile
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MappingProfileDefault"/> class.
+        /// </summary>
         public MappingProfileDefault()
         {
             CreateMap<Order, OrderRequestDto>()

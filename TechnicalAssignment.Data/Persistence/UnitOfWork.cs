@@ -5,6 +5,9 @@ using TechnicalAssignment.Data.Persistence.Repositories;
 
 namespace TechnicalAssignment.Data.Persistence
 {
+    /// <summary>
+    /// Implements a unit of work.
+    /// </summary>
     public class UnitOfWork : IUnitOfWork
     {
         private readonly ITechnicalAssignmentDbContext context;
@@ -15,12 +18,18 @@ namespace TechnicalAssignment.Data.Persistence
 
         private bool disposed = false;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UnitOfWork"/> class.
+        /// </summary>
+        /// <param name="context">DB context.</param>
+        /// <param name="mapper">AutoMapper data mapper.</param>
         public UnitOfWork(ITechnicalAssignmentDbContext context, IMapper mapper)
         {
             this.context = context;
             this.mapper = mapper;
         }
 
+        /// <inheritdoc/>
         public IOrdersRepository OrdersRepository
         {
             get
@@ -34,6 +43,7 @@ namespace TechnicalAssignment.Data.Persistence
             }
         }
 
+        /// <inheritdoc/>
         public IProductsRepository ProductsRepository
         {
             get
@@ -53,6 +63,7 @@ namespace TechnicalAssignment.Data.Persistence
             GC.SuppressFinalize(this);
         }
 
+        /// <inheritdoc/>
         public async Task<int> SaveAsync()
         {
             return await context.SaveChangesAsync();
