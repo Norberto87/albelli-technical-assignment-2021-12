@@ -15,19 +15,19 @@ namespace TechnicalAssignment.Data.Entities.Configuration
                 new Order
                 {
                     Id = 1,
-                    Status = (int)OrderStatusType.Received
+                    Status = OrderStatusType.Received
                 },
 
                 new Order
                 {
                     Id = 2,
-                    Status = (int)OrderStatusType.Processing
+                    Status = OrderStatusType.Processing
                 },
 
                 new Order
                 {
                     Id = 3,
-                    Status = (int)OrderStatusType.Shipped
+                    Status = OrderStatusType.Shipped
                 });
         }
     }

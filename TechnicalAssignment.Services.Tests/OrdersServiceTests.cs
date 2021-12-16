@@ -235,7 +235,7 @@ namespace TechnicalAssignment.Services.Tests
         {
             unitOfWorkMock.OrdersRepositoryMock.Setup(r => r.GetAsync(It.IsAny<int>())).ReturnsAsync(() => new OrderRequestDto());
 
-            var result = await service.UpdateOrderStatusAsync(new OrderStatusDto());
+            var result = await service.UpdateOrderStatusAsync(new OrderStatusDto { OrderStatus = OrderStatusType.Closed });
 
             Assert.AreEqual(OperationStatusCode.Ok, result.StatusCode);
         }

@@ -73,7 +73,7 @@ namespace TechnicalAssignment.Data.Persistence.Repositories
 
             var orderToAdd = mapper.Map<Order>(order);
 
-            orderToAdd.Status = (int)OrderStatusType.Received;
+            orderToAdd.Status = OrderStatusType.Received;
 
             await context.Orders.AddAsync(orderToAdd);
             await context.OrderProducts.AddRangeAsync(orderToAdd.OrderProducts);
