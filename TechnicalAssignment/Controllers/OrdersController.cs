@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Net;
+using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,19 +20,33 @@ namespace TechnicalAssignment.Controllers
             this.ordersService = ordersService;
         }
 
-        // GET api/<OrdersController>/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<OrderRequestWithProductsDto>> GetAsync(int id)
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(OrderResponseWithProductsDto))]
+        [ProducesResponseType((int)HttpStatusCode.NotFound, Type = typeof(ActionResult))]
+        public async Task<ActionResult<OrderResponseWithProductsDto>> GetAsync(int id)
         {
-            OrderRequestDto order = await ordersService.GetOrderWithProductsAsync(id);
+            var result = await ordersService.GetOrderWithProductsAsync(id);
 
-            return order != null
-                ? Ok(order)
-                : NotFound("No orders found for the order ID provided.");
+            return result.StatusCode == OperationStatusCode.Ok
+                ? Ok(result)
+                : NotFound();
         }
 
-        // POST api/<OrdersController>
+        [HttpGet("{id}/status")]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(OrderStatusDto))]
+        [ProducesResponseType((int)HttpStatusCode.NotFound, Type = typeof(ActionResult))]
+        public async Task<ActionResult<OrderStatusDto>> GetOrderStatusAsync(int id)
+        {
+            var result = await ordersService.GetOrderStatusAsync(id);
+
+            return result.StatusCode == OperationStatusCode.Ok
+                ? Ok(result.Data)
+                : NotFound();
+        }
+
         [HttpPost]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(OrderRequestWithProductsDto))]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ActionResult))]
         public async Task<ActionResult<OrderResponseWithProductsDto>> Post([FromBody] OrderRequestWithProductsDto order)
         {
             var result = await ordersService.CreateOrderAsync(order);
@@ -41,16 +56,48 @@ namespace TechnicalAssignment.Controllers
                 : BadRequest(result.Message);
         }
 
-        // PUT api/<OrdersController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPut("status")]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(OrderStatusDto))]
+        [ProducesResponseType((int)HttpStatusCode.NotFound, Type = typeof(ActionResult))]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ActionResult))]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError, Type = typeof(ActionResult))]
+        public async Task<ActionResult> Put([FromBody] OrderStatusDto order)
         {
+            var result = await ordersService.UpdateOrderStatusAsync(order);
+
+            switch (result.StatusCode)
+            {
+                case OperationStatusCode.Ok:
+                    return Ok();
+                case OperationStatusCode.NotFound:
+                    return NotFound();
+                case OperationStatusCode.InvalidData:
+                    return BadRequest(result.Message);
+                default:
+                    return StatusCode((int)HttpStatusCode.InternalServerError, "An unspecified error occurred.");
+            }
         }
 
-        // DELETE api/<OrdersController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ActionResult))]
+        [ProducesResponseType((int)HttpStatusCode.NotFound, Type = typeof(ActionResult))]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ActionResult))]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError, Type = typeof(ActionResult))]
+        public async Task<ActionResult> Delete(int id)
         {
+            var result = await ordersService.DeleteOrderAsync(id);
+
+            switch (result.StatusCode)
+            {
+                case OperationStatusCode.Ok:
+                    return Ok();
+                case OperationStatusCode.NotFound:
+                    return NotFound();
+                case OperationStatusCode.InvalidData:
+                    return BadRequest(result.Message);
+                default:
+                    return StatusCode((int)HttpStatusCode.InternalServerError, "An unspecified error occurred.");
+            }
         }
     }
 }
