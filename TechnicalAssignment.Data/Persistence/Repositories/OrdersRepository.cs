@@ -66,6 +66,8 @@ namespace TechnicalAssignment.Data.Persistence.Repositories
 
             orderToAdd.Status = (int)OrderStatusType.Received;
 
+            context.SetBulkMode(true);
+
             await context.Orders.AddAsync(orderToAdd);
             await context.OrderProducts.AddRangeAsync(orderToAdd.OrderProducts);
 

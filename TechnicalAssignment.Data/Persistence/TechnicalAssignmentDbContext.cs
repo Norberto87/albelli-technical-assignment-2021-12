@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +22,20 @@ namespace TechnicalAssignment.Data.Persistence
         public DbSet<Product> Products { get; set; }
 
         public DbSet<OrderProduct> OrderProducts { get; set; }
+
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            var result = await base.SaveChangesAsync(cancellationToken);
+
+            ChangeTracker.AutoDetectChangesEnabled = true;
+
+            return result;
+        }
+
+        public void SetBulkMode(bool bulkEnabled)
+        {
+            ChangeTracker.AutoDetectChangesEnabled = bulkEnabled;
+        }
 
         // TODO: remove method.
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

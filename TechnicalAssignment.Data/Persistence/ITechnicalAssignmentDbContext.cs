@@ -17,5 +17,7 @@ namespace TechnicalAssignment.Data.Persistence
         DbSet<OrderProduct> OrderProducts { get; set; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+
+        void SetBulkMode(bool bulkEnabled);
     }
 }
