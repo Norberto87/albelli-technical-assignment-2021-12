@@ -38,7 +38,7 @@ namespace TechnicalAssignment.Services
 
             if (await unitOfWork.OrdersRepository.GetAsync(order.OrderId) != null)
             {
-                return new OperationResultWithData<OrderResponseWithProductsDto> { StatusCode = OperationStatusCode.AlreadyExists };
+                return new OperationResultWithData<OrderResponseWithProductsDto> { StatusCode = OperationStatusCode.AlreadyExists, Message = "The provided order ID is already in use." };
             }
 
             var createdOrder = await unitOfWork.OrdersRepository.CreateAsync(order);
