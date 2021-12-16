@@ -97,7 +97,7 @@ namespace TechnicalAssignment.Data.Persistence.Repositories
                 context.OrderProducts.Remove(product);
             }
 
-            var order = await context.Orders.SingleOrDefaultAsync(o => o.Id == id);
+            var order = await context.Orders.SingleAsync(o => o.Id == id);
 
             if(context.Entry(order).State == EntityState.Detached)
             {
@@ -109,7 +109,7 @@ namespace TechnicalAssignment.Data.Persistence.Repositories
 
         public async Task UpdateStatusAsync(OrderStatusDto order)
         {
-            var entity = await context.Orders.FindAsync(order.Id);
+            var entity = await context.Orders.SingleAsync(o => o.Id == order.Id);
 
             entity = mapper.Map(order, entity);
 
