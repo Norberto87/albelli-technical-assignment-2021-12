@@ -85,17 +85,23 @@ namespace TechnicalAssignment.Controllers
         /// Updates the status of an order.
         /// </summary>
         /// <param name="order">Order to be updated.</param>
-        /// <returns>HTTP OK result. If the order does not exist, a <see cref="NotFoundResult"/> is returned instead.</returns>
+        /// <returns>HTTP OK result. If the order does not exist, a <see cref="NotFoundResult"/> is returned. If the order status is invalid, a <see cref="BadRequestObjectResult"/> is returned.</returns>
         [HttpPut("status")]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(OrderStatusDto))]
         [ProducesResponseType((int)HttpStatusCode.NotFound, Type = typeof(ActionResult))]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ActionResult))]
         public async Task<ActionResult> PutAsync([FromBody] OrderStatusDto order)
         {
             var result = await ordersService.UpdateOrderStatusAsync(order);
 
-            return result.StatusCode == OperationStatusCode.Ok
-                ? Ok()
-                : NotFound();
+            if(result.StatusCode == OperationStatusCode.Ok)
+            {
+                return Ok();
+            }
+
+            return result.StatusCode == OperationStatusCode.NotFound
+                ? NotFound()
+                : BadRequest(result.Message);
         }
 
         /// <summary>

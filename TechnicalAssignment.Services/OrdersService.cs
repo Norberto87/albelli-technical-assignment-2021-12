@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using TechnicalAssignment.Data.Models;
+using TechnicalAssignment.Data.Models.Enums;
 using TechnicalAssignment.Data.Persistence;
 using TechnicalAssignment.Services.Models;
 
@@ -58,7 +59,7 @@ namespace TechnicalAssignment.Services
         {
             var orderStatus = await unitOfWork.OrdersRepository.GetStatusAsync(id);
 
-            if(orderStatus == null)
+            if (orderStatus == null)
             {
                 return new OperationResultWithData<OrderStatusDto> { StatusCode = OperationStatusCode.NotFound };
             }
@@ -87,6 +88,11 @@ namespace TechnicalAssignment.Services
             if (await unitOfWork.OrdersRepository.GetAsync(order.OrderId) == null)
             {
                 return new OperationResult(OperationStatusCode.NotFound, "The order does not exist");
+            }
+
+            if (!Enum.IsDefined(typeof(OrderStatusType), order.OrderStatus))
+            {
+                return new OperationResult(OperationStatusCode.InvalidData, "The order status is not valid");
             }
 
             await unitOfWork.OrdersRepository.UpdateStatusAsync(order);
