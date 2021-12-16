@@ -12,6 +12,8 @@ namespace TechnicalAssignment.Data.Models.Mapping
         {
             CreateMap<Order, OrderRequestDto>().ReverseMap();
 
+            CreateMap<Order, OrderStatusDto>().ReverseMap();
+
             CreateMap<Product, ProductDto>().ReverseMap();
 
             CreateMap<Order, OrderRequestWithProductsDto>()
@@ -24,6 +26,12 @@ namespace TechnicalAssignment.Data.Models.Mapping
                 .AfterMap((src, dest, context) =>
                 {
                     dest.OrderProducts = src.Products.Select(p => new OrderProduct { OrderId = src.Id, ProductId = p.Id, Quantity = p.Quantity }).ToList();
+                });
+
+            CreateMap<Order, OrderResponseWithProductsDto>()
+                .AfterMap((src, dest, context) =>
+                {
+                    dest.Products = src.OrderProducts.Select(op => new OrderResponseProductDto { Id = op.ProductId, Quantity = op.Quantity, RequiredWidth = op.Product.Width });
                 });
 
             CreateMap<OrderRequestProductDto, OrderResponseProductDto>();
