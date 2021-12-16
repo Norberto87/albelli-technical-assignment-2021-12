@@ -136,21 +136,6 @@ namespace TechnicalAssignment.Tests.Controllers
         }
 
         [TestMethod]
-        public async Task Put_ShouldReturnStatusBadRequest_WhenOrderDataIsNotValid()
-        {
-            service.Setup(s => s.UpdateOrderStatusAsync(It.IsAny<OrderStatusDto>())).ReturnsAsync(() => new OperationResult(OperationStatusCode.InvalidData));
-
-            var result = await controller.Put(new OrderStatusDto());
-
-            Assert.IsNotNull(result);
-
-            var httpResult = result as BadRequestObjectResult;
-
-            Assert.IsNotNull(httpResult);
-            Assert.AreEqual((int)HttpStatusCode.BadRequest, httpResult.StatusCode);
-        }
-
-        [TestMethod]
         public async Task Put_ShouldReturnStatusNotFound_WhenOrderDataIsNotValid()
         {
             service.Setup(s => s.UpdateOrderStatusAsync(It.IsAny<OrderStatusDto>())).ReturnsAsync(() => new OperationResult(OperationStatusCode.NotFound));
@@ -178,21 +163,6 @@ namespace TechnicalAssignment.Tests.Controllers
 
             Assert.IsNotNull(httpResult);
             Assert.AreEqual((int)HttpStatusCode.OK, httpResult.StatusCode);
-        }
-
-        [TestMethod]
-        public async Task Delete_ShouldReturnStatusBadRequest_WhenOrderDataIsNotValid()
-        {
-            service.Setup(s => s.DeleteOrderAsync(It.IsAny<int>())).ReturnsAsync(() => new OperationResult(OperationStatusCode.InvalidData));
-
-            var result = await controller.Delete(1);
-
-            Assert.IsNotNull(result);
-
-            var httpResult = result as BadRequestObjectResult;
-
-            Assert.IsNotNull(httpResult);
-            Assert.AreEqual((int)HttpStatusCode.BadRequest, httpResult.StatusCode);
         }
 
         [TestMethod]

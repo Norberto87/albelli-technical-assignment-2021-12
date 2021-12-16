@@ -69,11 +69,6 @@ namespace TechnicalAssignment.Services
         /// <inheritdoc/>
         public async Task<OperationResult> DeleteOrderAsync(int id)
         {
-            if (id <= 0)
-            {
-                return new OperationResult(OperationStatusCode.InvalidData, "The order ID provided is not valid");
-            }
-
             if (await unitOfWork.OrdersRepository.GetAsync(id) == null)
             {
                 return new OperationResult(OperationStatusCode.NotFound, "The order ID provided does not exist");
@@ -89,11 +84,6 @@ namespace TechnicalAssignment.Services
         /// <inheritdoc/>
         public async Task<OperationResult> UpdateOrderStatusAsync(OrderStatusDto order)
         {
-            if (order.Id <= 0)
-            {
-                return new OperationResult(OperationStatusCode.InvalidData, "The order ID provided is not valid");
-            }
-
             if (await unitOfWork.OrdersRepository.GetAsync(order.Id) == null)
             {
                 return new OperationResult(OperationStatusCode.NotFound, "The order does not exist");

@@ -59,45 +59,25 @@ namespace TechnicalAssignment.Controllers
         [HttpPut("status")]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(OrderStatusDto))]
         [ProducesResponseType((int)HttpStatusCode.NotFound, Type = typeof(ActionResult))]
-        [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ActionResult))]
-        [ProducesResponseType((int)HttpStatusCode.InternalServerError, Type = typeof(ActionResult))]
         public async Task<ActionResult> Put([FromBody] OrderStatusDto order)
         {
             var result = await ordersService.UpdateOrderStatusAsync(order);
 
-            switch (result.StatusCode)
-            {
-                case OperationStatusCode.Ok:
-                    return Ok();
-                case OperationStatusCode.NotFound:
-                    return NotFound();
-                case OperationStatusCode.InvalidData:
-                    return BadRequest(result.Message);
-                default:
-                    return StatusCode((int)HttpStatusCode.InternalServerError, "An unspecified error occurred.");
-            }
+            return result.StatusCode == OperationStatusCode.Ok
+                ? Ok()
+                : NotFound();
         }
 
         [HttpDelete("{id}")]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ActionResult))]
         [ProducesResponseType((int)HttpStatusCode.NotFound, Type = typeof(ActionResult))]
-        [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ActionResult))]
-        [ProducesResponseType((int)HttpStatusCode.InternalServerError, Type = typeof(ActionResult))]
         public async Task<ActionResult> Delete(int id)
         {
             var result = await ordersService.DeleteOrderAsync(id);
 
-            switch (result.StatusCode)
-            {
-                case OperationStatusCode.Ok:
-                    return Ok();
-                case OperationStatusCode.NotFound:
-                    return NotFound();
-                case OperationStatusCode.InvalidData:
-                    return BadRequest(result.Message);
-                default:
-                    return StatusCode((int)HttpStatusCode.InternalServerError, "An unspecified error occurred.");
-            }
+            return result.StatusCode == OperationStatusCode.Ok
+                ? Ok()
+                : NotFound();
         }
     }
 }
