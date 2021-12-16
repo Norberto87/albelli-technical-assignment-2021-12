@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TechnicalAssignment.Data.Persistence;
 
@@ -10,9 +11,10 @@ using TechnicalAssignment.Data.Persistence;
 namespace TechnicalAssignment.Data.Migrations
 {
     [DbContext(typeof(TechnicalAssignmentDbContext))]
-    partial class TechnicalAssignmentDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211216084551_AddProductNameAsIndex")]
+    partial class AddProductNameAsIndex
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
