@@ -1,4 +1,6 @@
 using System;
+using System.IO;
+using System.Reflection;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -36,6 +38,11 @@ namespace TechnicalAssignment
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "TechnicalAssignment", Version = "v1" });
                 c.AddEnumsWithValuesFixFilters();
+
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+
+                c.IncludeXmlComments(xmlPath);
             });
         }
 
