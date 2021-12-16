@@ -159,6 +159,86 @@ namespace TechnicalAssignment.Services.Tests
             Assert.AreEqual(25f, result.Data.RequiredWidth);
         }
 
+        [TestMethod]
+        public async Task GetOrderWithProductsAsync_ShouldReturnNotFoundStatusCode_WhenOrderDoesNotExist()
+        {
+            unitOfWorkMock.OrdersRepositoryMock.Setup(r => r.GetOrderWithProductsAsync(It.IsAny<int>())).ReturnsAsync(() => null);
+
+            var result = await service.GetOrderWithProductsAsync(1);
+
+            Assert.AreEqual(OperationStatusCode.NotFound, result.StatusCode);
+        }
+
+        [TestMethod]
+        public async Task GetOrderWithProductsAsync_ShouldReturnOkStatusCode_WhenOrderDoesNotExist()
+        {
+            unitOfWorkMock.OrdersRepositoryMock.Setup(r => r.GetOrderWithProductsAsync(It.IsAny<int>())).ReturnsAsync(() => new OrderResponseWithProductsDto());
+
+            var result = await service.GetOrderWithProductsAsync(1);
+
+            Assert.AreEqual(OperationStatusCode.Ok, result.StatusCode);
+        }
+
+        [TestMethod]
+        public async Task GetOrderStatusAsync_ShouldReturnNotFoundStatusCode_WhenOrderDoesNotExist()
+        {
+            unitOfWorkMock.OrdersRepositoryMock.Setup(r => r.GetStatusAsync(It.IsAny<int>())).ReturnsAsync(() => null);
+
+            var result = await service.GetOrderStatusAsync(1);
+
+            Assert.AreEqual(OperationStatusCode.NotFound, result.StatusCode);
+        }
+
+        [TestMethod]
+        public async Task GetOrderStatusAsync_ShouldReturnOkStatusCode_WhenOrderDoesNotExist()
+        {
+            unitOfWorkMock.OrdersRepositoryMock.Setup(r => r.GetStatusAsync(It.IsAny<int>())).ReturnsAsync(() => new OrderStatusDto());
+
+            var result = await service.GetOrderStatusAsync(1);
+
+            Assert.AreEqual(OperationStatusCode.Ok, result.StatusCode);
+        }
+
+        [TestMethod]
+        public async Task DeleteOrderAsync_ShouldReturnNotFoundStatusCode_WhenOrderDoesNotExist()
+        {
+            unitOfWorkMock.OrdersRepositoryMock.Setup(r => r.GetAsync(It.IsAny<int>())).ReturnsAsync(() => null);
+
+            var result = await service.DeleteOrderAsync(1);
+
+            Assert.AreEqual(OperationStatusCode.NotFound, result.StatusCode);
+        }
+
+        [TestMethod]
+        public async Task DeleteOrderAsync_ShouldReturnOkStatusCode_WhenOrderExists()
+        {
+            unitOfWorkMock.OrdersRepositoryMock.Setup(r => r.GetAsync(It.IsAny<int>())).ReturnsAsync(() => new OrderRequestDto());
+
+            var result = await service.DeleteOrderAsync(1);
+
+            Assert.AreEqual(OperationStatusCode.Ok, result.StatusCode);
+        }
+
+        [TestMethod]
+        public async Task UpdateOrderStatusAsync_ShouldReturnNotFoundStatusCode_WhenOrderDoesNotExist()
+        {
+            unitOfWorkMock.OrdersRepositoryMock.Setup(r => r.GetAsync(It.IsAny<int>())).ReturnsAsync(() => null);
+
+            var result = await service.UpdateOrderStatusAsync(new OrderStatusDto());
+
+            Assert.AreEqual(OperationStatusCode.NotFound, result.StatusCode);
+        }
+
+        [TestMethod]
+        public async Task UpdateOrderStatusAsync_ShouldReturnOkStatusCode_WhenOrderExists()
+        {
+            unitOfWorkMock.OrdersRepositoryMock.Setup(r => r.GetAsync(It.IsAny<int>())).ReturnsAsync(() => new OrderRequestDto());
+
+            var result = await service.UpdateOrderStatusAsync(new OrderStatusDto());
+
+            Assert.AreEqual(OperationStatusCode.Ok, result.StatusCode);
+        }
+
         private OrderRequestWithProductsDto CreateValidOrderRequestWithProducts()
         {
             var products = new List<OrderRequestProductDto>();
