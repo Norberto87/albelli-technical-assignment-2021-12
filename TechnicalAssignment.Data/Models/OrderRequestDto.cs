@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
-
-namespace TechnicalAssignment.Data.Models
+﻿namespace TechnicalAssignment.Data.Models
 {
     public class OrderRequestDto
     {
-        public int Id { get; set; }
+        public int OrderId { get; set; }
     }
 }

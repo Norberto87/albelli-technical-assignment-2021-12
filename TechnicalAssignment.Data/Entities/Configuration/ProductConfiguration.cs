@@ -19,7 +19,7 @@ namespace TechnicalAssignment.Data.Entities.Configuration
             builder.HasData(
                 new Product
                 {
-                    Id = (int)ProductType.Calendar,
+                    Id = ProductType.Calendar,
                     Name = nameof(ProductType.Calendar),
                     StackSize = 1,
                     Width = 10
@@ -27,7 +27,7 @@ namespace TechnicalAssignment.Data.Entities.Configuration
 
                 new Product
                 {
-                    Id = (int)ProductType.Canvas,
+                    Id = ProductType.Canvas,
                     Name = nameof(ProductType.Canvas),
                     StackSize = 1,
                     Width = 16
@@ -35,7 +35,7 @@ namespace TechnicalAssignment.Data.Entities.Configuration
 
                 new Product
                 {
-                    Id = (int)ProductType.Cards,
+                    Id = ProductType.Cards,
                     Name = nameof(ProductType.Cards),
                     StackSize = 1,
                     Width = 4.7f
@@ -43,7 +43,7 @@ namespace TechnicalAssignment.Data.Entities.Configuration
 
                 new Product
                 {
-                    Id = (int)ProductType.Mug,
+                    Id = ProductType.Mug,
                     Name = nameof(ProductType.Mug),
                     StackSize = 4,
                     Width = 94
@@ -51,7 +51,7 @@ namespace TechnicalAssignment.Data.Entities.Configuration
 
                 new Product
                 {
-                    Id = (int)ProductType.PhotoBook,
+                    Id = ProductType.PhotoBook,
                     Name = nameof(ProductType.PhotoBook),
                     StackSize = 1,
                     Width = 19

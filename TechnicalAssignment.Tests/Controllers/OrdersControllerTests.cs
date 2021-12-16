@@ -45,7 +45,7 @@ namespace TechnicalAssignment.Tests.Controllers
         public async Task GetAsync_ShouldReturnOrder_WhenOrderIdExists()
         {
             int orderId = 1;
-            service.Setup(s => s.GetOrderWithProductsAsync(It.IsAny<int>())).ReturnsAsync(() => new OperationResultWithData<OrderResponseWithProductsDto>() { Data = new OrderResponseWithProductsDto { Id = orderId } });
+            service.Setup(s => s.GetOrderWithProductsAsync(It.IsAny<int>())).ReturnsAsync(() => new OperationResultWithData<OrderResponseWithProductsDto>() { Data = new OrderResponseWithProductsDto { OrderId = orderId } });
 
             var result = await controller.GetAsync(orderId);
 
@@ -56,10 +56,10 @@ namespace TechnicalAssignment.Tests.Controllers
             Assert.IsNotNull(httpResult);
             Assert.AreEqual((int)HttpStatusCode.OK, httpResult.StatusCode);
 
-            var resultData = httpResult.Value as OperationResultWithData<OrderResponseWithProductsDto>;
+            var resultData = httpResult.Value as OrderResponseWithProductsDto;
 
             Assert.IsNotNull(resultData);
-            Assert.AreEqual(orderId, resultData.Data.Id);
+            Assert.AreEqual(orderId, resultData.OrderId);
         }
 
         [TestMethod]
@@ -82,7 +82,7 @@ namespace TechnicalAssignment.Tests.Controllers
         public async Task GetOrderStatusAsync_ShouldReturnOrderStatus_WhenOrderIdExists()
         {
             int orderId = 1;
-            service.Setup(s => s.GetOrderStatusAsync(It.IsAny<int>())).ReturnsAsync(() => new OperationResultWithData<OrderStatusDto>() { Data = new OrderStatusDto { Id = orderId } });
+            service.Setup(s => s.GetOrderStatusAsync(It.IsAny<int>())).ReturnsAsync(() => new OperationResultWithData<OrderStatusDto>() { Data = new OrderStatusDto { OrderId = orderId } });
 
             var result = await controller.GetOrderStatusAsync(orderId);
 
@@ -96,7 +96,7 @@ namespace TechnicalAssignment.Tests.Controllers
             var resultData = httpResult.Value as OrderStatusDto;
 
             Assert.IsNotNull(resultData);
-            Assert.AreEqual(orderId, resultData.Id);
+            Assert.AreEqual(orderId, resultData.OrderId);
         }
 
         [TestMethod]
@@ -118,7 +118,7 @@ namespace TechnicalAssignment.Tests.Controllers
         public async Task Post_ShouldReturnCreatedOrder_WhenOrderDataIsValid()
         {
             int orderId = 1;
-            service.Setup(s => s.CreateOrderAsync(It.IsAny<OrderRequestWithProductsDto>())).ReturnsAsync(() => new OperationResultWithData<OrderResponseWithProductsDto>(OperationStatusCode.Ok, new OrderResponseWithProductsDto { Id = orderId }));
+            service.Setup(s => s.CreateOrderAsync(It.IsAny<OrderRequestWithProductsDto>())).ReturnsAsync(() => new OperationResultWithData<OrderResponseWithProductsDto>(OperationStatusCode.Ok, new OrderResponseWithProductsDto { OrderId = orderId }));
 
             var result = await controller.Post(new OrderRequestWithProductsDto());
 
@@ -132,7 +132,7 @@ namespace TechnicalAssignment.Tests.Controllers
             var resultData = httpResult.Value as OrderResponseWithProductsDto;
 
             Assert.IsNotNull(resultData);
-            Assert.AreEqual(orderId, resultData.Id);
+            Assert.AreEqual(orderId, resultData.OrderId);
         }
 
         [TestMethod]

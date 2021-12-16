@@ -1,11 +1,15 @@
-﻿namespace TechnicalAssignment.Data.Models
+﻿using TechnicalAssignment.Data.Models.Enums;
+
+namespace TechnicalAssignment.Data.Models
 {
     public class OrderResponseProductDto
     {
-        public int Id { get; set; }
+        public ProductType ProductType { get; set; }
 
         public int Quantity { get; set; }
 
-        public float RequiredWidth { get; set; }
+        public float BinWidth { get; set; }
+
+        public float Width { get; set; }
     }
 }

@@ -2,7 +2,9 @@
 using System.Threading.Tasks;
 
 using TechnicalAssignment.Data.Models;
+using TechnicalAssignment.Data.Models.Enums;
 using TechnicalAssignment.Data.Persistence;
+using TechnicalAssignment.Services.Models;
 
 namespace TechnicalAssignment.Services
 {
@@ -15,9 +17,16 @@ namespace TechnicalAssignment.Services
             this.unitOfWork = unitOfWork;
         }
 
-        public async Task<ProductDto> GetProductAsync(int id)
+        public async Task<OperationResultWithData<ProductDto>> GetProductAsync(ProductType id)
         {
-            return await unitOfWork.ProductsRepository.GetAsync(id);
+            var product = await unitOfWork.ProductsRepository.GetAsync(id);
+
+            if (product == null)
+            {
+                return new OperationResultWithData<ProductDto> { StatusCode = OperationStatusCode.NotFound };
+            }
+
+            return new OperationResultWithData<ProductDto>(OperationStatusCode.Ok, product);
         }
 
         public async Task<IEnumerable<ProductDto>> GetAllProductsAsync()

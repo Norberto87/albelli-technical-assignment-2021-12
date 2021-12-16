@@ -109,7 +109,7 @@ namespace TechnicalAssignment.Data.Persistence.Repositories
 
         public async Task UpdateStatusAsync(OrderStatusDto order)
         {
-            var entity = await context.Orders.SingleAsync(o => o.Id == order.Id);
+            var entity = await context.Orders.SingleAsync(o => o.Id == order.OrderId);
 
             entity = mapper.Map(order, entity);
 

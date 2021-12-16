@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 using TechnicalAssignment.Data.Entities;
 using TechnicalAssignment.Data.Models;
+using TechnicalAssignment.Data.Models.Enums;
 
 namespace TechnicalAssignment.Data.Persistence.Repositories
 {
@@ -22,9 +23,16 @@ namespace TechnicalAssignment.Data.Persistence.Repositories
             this.mapper = mapper;
         }
 
-        public async Task<ProductDto> GetAsync(int id)
+        public async Task<ProductDto> GetAsync(ProductType id)
         {
             Product product = await context.Products.FindAsync(id);
+
+            return mapper.Map<ProductDto>(product);
+        }
+
+        public async Task<ProductDto> GetAsync(string name)
+        {
+            Product product = await context.Products.SingleOrDefaultAsync(p => p.Name == name);
 
             return mapper.Map<ProductDto>(product);
         }
@@ -36,11 +44,11 @@ namespace TechnicalAssignment.Data.Persistence.Repositories
             return await mapper.ProjectTo<ProductDto>(products).ToListAsync();
         }
 
-        public async Task<HashSet<int>> GetAllProductTypesAsync()
+        public async Task<HashSet<ProductType>> GetAllProductTypesAsync()
         {
-            IQueryable<int> productIds = context.Products.AsNoTracking().Select(p => p.Id);
+            IQueryable<ProductType> productIds = context.Products.AsNoTracking().Select(p => p.Id);
 
-            return new HashSet<int>(await productIds.ToListAsync());
+            return new HashSet<ProductType>(await productIds.ToListAsync());
         }
     }
 }

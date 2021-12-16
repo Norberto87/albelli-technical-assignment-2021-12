@@ -2,10 +2,10 @@
 {
     public class OrderResponseDto
     {
-        public int Id { get; set; }
+        public int OrderId { get; set; }
 
         public int Status { get; set; }
 
-        public float RequiredWidth { get; set; }
+        public float RequiredBinWidth { get; set; }
     }
 }

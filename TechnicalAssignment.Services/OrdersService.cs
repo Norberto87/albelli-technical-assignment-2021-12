@@ -28,7 +28,7 @@ namespace TechnicalAssignment.Services
                 return new OperationResultWithData<OrderResponseWithProductsDto>(validationResult);
             }
 
-            if (await unitOfWork.OrdersRepository.GetAsync(order.Id) != null)
+            if (await unitOfWork.OrdersRepository.GetAsync(order.OrderId) != null)
             {
                 return new OperationResultWithData<OrderResponseWithProductsDto> { StatusCode = OperationStatusCode.AlreadyExists };
             }
@@ -84,7 +84,7 @@ namespace TechnicalAssignment.Services
         /// <inheritdoc/>
         public async Task<OperationResult> UpdateOrderStatusAsync(OrderStatusDto order)
         {
-            if (await unitOfWork.OrdersRepository.GetAsync(order.Id) == null)
+            if (await unitOfWork.OrdersRepository.GetAsync(order.OrderId) == null)
             {
                 return new OperationResult(OperationStatusCode.NotFound, "The order does not exist");
             }
@@ -98,18 +98,19 @@ namespace TechnicalAssignment.Services
 
         private async Task<OrderResponseWithProductsDto> ProcessOrderProducts(OrderResponseWithProductsDto order)
         {
-            IEnumerable<OrderProductDto> orderProducts = await unitOfWork.OrdersRepository.GetOrderProductsAsync(order.Id);
+            IEnumerable<OrderProductDto> orderProducts = await unitOfWork.OrdersRepository.GetOrderProductsAsync(order.OrderId);
 
             order.Products = new List<OrderResponseProductDto>(orderProducts.Select(p =>
             {
                 OrderResponseProductDto product = new OrderResponseProductDto
                 {
-                    Id = p.Id,
+                    ProductType = p.ProductType,
                     Quantity = p.Quantity,
-                    RequiredWidth = p.Width * GetStacks(p.Quantity, p.StackSize)
+                    BinWidth = p.Width * GetStacks(p.Quantity, p.StackSize),
+                    Width = p.Width
                 };
 
-                order.RequiredWidth += product.RequiredWidth;
+                order.RequiredBinWidth += product.BinWidth;
 
                 return product;
             }).ToList());
@@ -150,7 +151,7 @@ namespace TechnicalAssignment.Services
                 return new OperationResult(OperationStatusCode.InvalidData, "The order cannot be null");
             }
 
-            if (order.Id <= 0)
+            if (order.OrderId <= 0)
             {
                 return new OperationResult(OperationStatusCode.InvalidData, "The order ID provided is not valid");
             }
@@ -169,7 +170,7 @@ namespace TechnicalAssignment.Services
 
             foreach (var product in products)
             {
-                if (!availableProductTypes.Contains(product.Id))
+                if (!availableProductTypes.Contains(product.ProductType))
                 {
                     return new OperationResult(OperationStatusCode.InvalidData, "One or more product IDs is not valid");
                 }

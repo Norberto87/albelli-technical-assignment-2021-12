@@ -1,10 +1,12 @@
-﻿namespace TechnicalAssignment.Data.Entities
+﻿using TechnicalAssignment.Data.Models.Enums;
+
+namespace TechnicalAssignment.Data.Entities
 {
     public class OrderProduct
     {
         public int OrderId { get; set; }
 
-        public int ProductId { get; set; }
+        public ProductType ProductId { get; set; }
 
         public int Quantity { get; set; }
 

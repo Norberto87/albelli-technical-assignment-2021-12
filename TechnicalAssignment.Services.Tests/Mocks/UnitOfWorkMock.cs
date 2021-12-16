@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 using Moq;
 
+using TechnicalAssignment.Data.Models.Enums;
 using TechnicalAssignment.Data.Persistence;
 
 namespace TechnicalAssignment.Services.Tests.Mocks
@@ -26,12 +27,12 @@ namespace TechnicalAssignment.Services.Tests.Mocks
             ProductsRepositoryMock.Setup(p => p.GetAllProductTypesAsync()).ReturnsAsync(GetValidProductTypes());
         }
 
-        private HashSet<int> GetValidProductTypes()
+        private HashSet<ProductType> GetValidProductTypes()
         {
-            HashSet<int> productTypes = new HashSet<int>();
-            productTypes.Add(1);
-            productTypes.Add(2);
-            productTypes.Add(3);
+            HashSet<ProductType> productTypes = new HashSet<ProductType>();
+            productTypes.Add(ProductType.PhotoBook);
+            productTypes.Add(ProductType.Calendar);
+            productTypes.Add(ProductType.Canvas);
 
             return productTypes;
         }

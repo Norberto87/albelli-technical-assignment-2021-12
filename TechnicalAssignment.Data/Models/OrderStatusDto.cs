@@ -4,8 +4,8 @@ namespace TechnicalAssignment.Data.Models
 {
     public class OrderStatusDto
     {
-        public int Id { get; set; }
+        public int OrderId { get; set; }
 
-        public OrderStatusType Status { get; set; }
+        public OrderStatusType OrderStatus { get; set; }
     }
 }

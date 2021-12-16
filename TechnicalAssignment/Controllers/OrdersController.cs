@@ -28,7 +28,7 @@ namespace TechnicalAssignment.Controllers
             var result = await ordersService.GetOrderWithProductsAsync(id);
 
             return result.StatusCode == OperationStatusCode.Ok
-                ? Ok(result)
+                ? Ok(result.Data)
                 : NotFound();
         }
 

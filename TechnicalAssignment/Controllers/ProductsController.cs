@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Mvc;
 
 using TechnicalAssignment.Data.Models;
+using TechnicalAssignment.Data.Models.Enums;
 using TechnicalAssignment.Services;
+using TechnicalAssignment.Services.Models;
 
 namespace TechnicalAssignment.Controllers
 {
@@ -19,8 +22,9 @@ namespace TechnicalAssignment.Controllers
             this.productsService = productsService;
         }
 
-        // GET: api/<ProductsController>
         [HttpGet]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(IEnumerable<ProductDto>))]
+        [ProducesResponseType((int)HttpStatusCode.NotFound, Type = typeof(ActionResult))]
         public async Task<ActionResult<IEnumerable<ProductDto>>> GetAsync()
         {
             IEnumerable<ProductDto> products = await productsService.GetAllProductsAsync();
@@ -28,31 +32,16 @@ namespace TechnicalAssignment.Controllers
             return Ok(products);
         }
 
-        // GET api/<ProductsController>/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<ProductDto>> GetAsync(int id)
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ProductDto))]
+        [ProducesResponseType((int)HttpStatusCode.NotFound, Type = typeof(ActionResult))]
+        public async Task<ActionResult<ProductDto>> GetAsync(ProductType id)
         {
-            ProductDto order = await productsService.GetProductAsync(id);
+            var result = await productsService.GetProductAsync(id);
 
-            return Ok(order);
-        }
-
-        // POST api/<ProductsController>
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
-
-        // PUT api/<ProductsController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<ProductsController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            return result.StatusCode == OperationStatusCode.Ok
+                ? Ok(result.Data)
+                : NotFound();
         }
     }
 }

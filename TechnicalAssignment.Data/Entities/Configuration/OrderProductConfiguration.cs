@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
+using TechnicalAssignment.Data.Models.Enums;
+
 namespace TechnicalAssignment.Data.Entities.Configuration
 {
     internal class OrderProductConfiguration : IEntityTypeConfiguration<OrderProduct>
@@ -23,35 +25,35 @@ namespace TechnicalAssignment.Data.Entities.Configuration
                 new OrderProduct
                 {
                     OrderId = 1,
-                    ProductId = 3,
+                    ProductId = ProductType.Canvas,
                     Quantity = 2,
                 },
 
                 new OrderProduct
                 {
                     OrderId = 2,
-                    ProductId = 1,
+                    ProductId = ProductType.PhotoBook,
                     Quantity = 1,
                 },
 
                 new OrderProduct
                 {
                     OrderId = 2,
-                    ProductId = 4,
+                    ProductId = ProductType.Cards,
                     Quantity = 3,
                 },
 
                 new OrderProduct
                 {
                     OrderId = 3,
-                    ProductId = 5,
+                    ProductId = ProductType.Mug,
                     Quantity = 2,
                 },
 
                 new OrderProduct
                 {
                     OrderId = 3,
-                    ProductId = 2,
+                    ProductId = ProductType.Calendar,
                     Quantity = 4,
                 });
         }
