@@ -16,6 +16,7 @@ namespace TechnicalAssignment.Data.Models.Mapping
 
             CreateMap<Order, OrderStatusDto>()
                 .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.OrderStatus, opt => opt.MapFrom(src => src.Status))
                 .ReverseMap();
 
             CreateMap<Product, ProductDto>()
@@ -38,6 +39,7 @@ namespace TechnicalAssignment.Data.Models.Mapping
 
             CreateMap<Order, OrderResponseWithProductsDto>()
                 .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.OrderStatus, opt => opt.MapFrom(src => src.Status))
                 .AfterMap((src, dest, context) =>
                 {
                     dest.Products = src.OrderProducts.Select(op => new OrderResponseProductDto { ProductType = op.ProductId, Quantity = op.Quantity, BinWidth = op.Product.Width });
