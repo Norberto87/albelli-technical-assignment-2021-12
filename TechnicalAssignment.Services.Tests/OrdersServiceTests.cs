@@ -96,12 +96,67 @@ namespace TechnicalAssignment.Services.Tests
         [TestMethod]
         public async Task CreateOrderAsync_ShouldReturnOkStatusCode_WhenOrderIsValid()
         {
-            unitOfWorkMock.OrdersRepositoryMock.Setup(r => r.CreateAsync(It.IsAny<OrderRequestWithProductsDto>())).ReturnsAsync(CreateValidOrderResponseWithProducts());
+            unitOfWorkMock.OrdersRepositoryMock.Setup(r => r.CreateAsync(It.IsAny<OrderRequestWithProductsDto>())).ReturnsAsync(new OrderResponseWithProductsDto { Id = 1 });
             unitOfWorkMock.OrdersRepositoryMock.Setup(r => r.GetOrderProductsAsync(It.IsAny<int>())).ReturnsAsync(CreateValidOrderProducts());
 
             var result = await service.CreateOrderAsync(CreateValidOrderRequestWithProducts());
 
             Assert.AreEqual(OperationStatusCode.Ok, result.StatusCode);
+        }
+
+        [TestMethod]
+        public async Task CreateOrderAsync_ShouldReturnValidMinimumRequiredWidth_WhenStackSizeIsOne()
+        {
+            unitOfWorkMock.OrdersRepositoryMock.Setup(r => r.CreateAsync(It.IsAny<OrderRequestWithProductsDto>())).ReturnsAsync(new OrderResponseWithProductsDto { Id = 1 });
+            unitOfWorkMock.OrdersRepositoryMock.Setup(r => r.GetOrderProductsAsync(It.IsAny<int>())).ReturnsAsync(CreateValidOrderResponseSingleProduct(10, 1, 12.5f));
+
+            var result = await service.CreateOrderAsync(CreateValidOrderRequestWithSingleProduct(1));
+
+            Assert.AreEqual(125f, result.Data.RequiredWidth);
+        }
+
+        [TestMethod]
+        public async Task CreateOrderAsync_ShouldReturnValidMinimumRequiredWidth_WhenQuantityIsOneAndStackSizeIsFive()
+        {
+            unitOfWorkMock.OrdersRepositoryMock.Setup(r => r.CreateAsync(It.IsAny<OrderRequestWithProductsDto>())).ReturnsAsync(new OrderResponseWithProductsDto { Id = 1 });
+            unitOfWorkMock.OrdersRepositoryMock.Setup(r => r.GetOrderProductsAsync(It.IsAny<int>())).ReturnsAsync(CreateValidOrderResponseSingleProduct(1, 5, 12.5f));
+
+            var result = await service.CreateOrderAsync(CreateValidOrderRequestWithSingleProduct(1));
+
+            Assert.AreEqual(12.5f, result.Data.RequiredWidth);
+        }
+
+        [TestMethod]
+        public async Task CreateOrderAsync_ShouldReturnValidMinimumRequiredWidth_WhenQuantityIsFiveAndStackSizeIsOne()
+        {
+            unitOfWorkMock.OrdersRepositoryMock.Setup(r => r.CreateAsync(It.IsAny<OrderRequestWithProductsDto>())).ReturnsAsync(new OrderResponseWithProductsDto { Id = 1 });
+            unitOfWorkMock.OrdersRepositoryMock.Setup(r => r.GetOrderProductsAsync(It.IsAny<int>())).ReturnsAsync(CreateValidOrderResponseSingleProduct(5, 1, 12.5f));
+
+            var result = await service.CreateOrderAsync(CreateValidOrderRequestWithSingleProduct(1));
+
+            Assert.AreEqual(62.5f, result.Data.RequiredWidth);
+        }
+
+        [TestMethod]
+        public async Task CreateOrderAsync_ShouldReturnValidMinimumRequiredWidth_WhenQuantityIsFourAndStackSizeIsFive()
+        {
+            unitOfWorkMock.OrdersRepositoryMock.Setup(r => r.CreateAsync(It.IsAny<OrderRequestWithProductsDto>())).ReturnsAsync(new OrderResponseWithProductsDto { Id = 1 });
+            unitOfWorkMock.OrdersRepositoryMock.Setup(r => r.GetOrderProductsAsync(It.IsAny<int>())).ReturnsAsync(CreateValidOrderResponseSingleProduct(4, 5, 12.5f));
+
+            var result = await service.CreateOrderAsync(CreateValidOrderRequestWithSingleProduct(1));
+
+            Assert.AreEqual(12.5f, result.Data.RequiredWidth);
+        }
+
+        [TestMethod]
+        public async Task CreateOrderAsync_ShouldReturnValidMinimumRequiredWidth_WhenQuantityIsSixAndStackSizeIsFive()
+        {
+            unitOfWorkMock.OrdersRepositoryMock.Setup(r => r.CreateAsync(It.IsAny<OrderRequestWithProductsDto>())).ReturnsAsync(new OrderResponseWithProductsDto { Id = 1 });
+            unitOfWorkMock.OrdersRepositoryMock.Setup(r => r.GetOrderProductsAsync(It.IsAny<int>())).ReturnsAsync(CreateValidOrderResponseSingleProduct(6, 5, 12.5f));
+
+            var result = await service.CreateOrderAsync(CreateValidOrderRequestWithSingleProduct(1));
+
+            Assert.AreEqual(25f, result.Data.RequiredWidth);
         }
 
         private OrderRequestWithProductsDto CreateValidOrderRequestWithProducts()
@@ -114,14 +169,12 @@ namespace TechnicalAssignment.Services.Tests
             return new OrderRequestWithProductsDto { Id = 1, Products = products };
         }
 
-        private OrderResponseWithProductsDto CreateValidOrderResponseWithProducts()
+        private OrderRequestWithProductsDto CreateValidOrderRequestWithSingleProduct(int quantity)
         {
-            var products = new List<OrderResponseProductDto>();
-            products.Add(new OrderResponseProductDto { Id = 1, Quantity = 1, RequiredWidth = 10f });
-            products.Add(new OrderResponseProductDto { Id = 2, Quantity = 2, RequiredWidth = 20f });
-            products.Add(new OrderResponseProductDto { Id = 3, Quantity = 3, RequiredWidth = 30f });
+            var products = new List<OrderRequestProductDto>();
+            products.Add(new OrderRequestProductDto { Id = 1, Quantity = quantity });
 
-            return new OrderResponseWithProductsDto { Id = 1 };
+            return new OrderRequestWithProductsDto { Id = 1, Products = products };
         }
 
         private IEnumerable<OrderProductDto> CreateValidOrderProducts()
@@ -130,6 +183,14 @@ namespace TechnicalAssignment.Services.Tests
             products.Add(new OrderProductDto { Id = 1, Quantity = 1, StackSize = 1 });
             products.Add(new OrderProductDto { Id = 2, Quantity = 2, StackSize = 2 });
             products.Add(new OrderProductDto { Id = 3, Quantity = 3, StackSize = 3 });
+
+            return products;
+        }
+
+        private IEnumerable<OrderProductDto> CreateValidOrderResponseSingleProduct(int quantity, int stackSize, float width)
+        {
+            var products = new List<OrderProductDto>();
+            products.Add(new OrderProductDto { Id = 1, Quantity = quantity, StackSize = stackSize, Width = width });
 
             return products;
         }
