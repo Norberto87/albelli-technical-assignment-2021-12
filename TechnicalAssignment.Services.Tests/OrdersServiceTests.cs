@@ -38,7 +38,7 @@ namespace TechnicalAssignment.Services.Tests
         [TestMethod]
         public async Task CreateOrderAsync_ShouldReturnInvalidDataStatusCode_WhenIdIsNotValid()
         {
-            var result = await service.CreateOrderAsync(new OrderWithProductsDto { Id = -1 });
+            var result = await service.CreateOrderAsync(new OrderRequestWithProductsDto { Id = -1 });
 
             Assert.AreEqual(OperationStatusCode.InvalidData, result.StatusCode);
         }
@@ -46,7 +46,7 @@ namespace TechnicalAssignment.Services.Tests
         [TestMethod]
         public async Task CreateOrderAsync_ShouldReturnInvalidDataStatusCode_WhenProductsListIsNull()
         {
-            var result = await service.CreateOrderAsync(new OrderWithProductsDto { Id = 1 });
+            var result = await service.CreateOrderAsync(new OrderRequestWithProductsDto { Id = 1 });
 
             Assert.AreEqual(OperationStatusCode.InvalidData, result.StatusCode);
         }
@@ -54,10 +54,10 @@ namespace TechnicalAssignment.Services.Tests
         [TestMethod]
         public async Task CreateOrderAsync_ShouldReturnInvalidDataStatusCode_WhenProductIdIsNotValid()
         {
-            var products = new List<OrderProductDto>();
-            products.Add(new OrderProductDto { Id = 0, Quantity = 1 });
+            var products = new List<OrderRequestProductDto>();
+            products.Add(new OrderRequestProductDto { Id = 0, Quantity = 1 });
 
-            var result = await service.CreateOrderAsync(new OrderWithProductsDto { Id = 1, Products = products });
+            var result = await service.CreateOrderAsync(new OrderRequestWithProductsDto { Id = 1, Products = products });
 
             Assert.AreEqual(OperationStatusCode.InvalidData, result.StatusCode);
         }
@@ -65,10 +65,10 @@ namespace TechnicalAssignment.Services.Tests
         [TestMethod]
         public async Task CreateOrderAsync_ShouldReturnInvalidDataStatusCode_WhenProductQuantityIsNotValid()
         {
-            var products = new List<OrderProductDto>();
-            products.Add(new OrderProductDto { Id = 1, Quantity = 0 });
+            var products = new List<OrderRequestProductDto>();
+            products.Add(new OrderRequestProductDto { Id = 1, Quantity = 0 });
 
-            var result = await service.CreateOrderAsync(new OrderWithProductsDto { Id = 1, Products = products });
+            var result = await service.CreateOrderAsync(new OrderRequestWithProductsDto { Id = 1, Products = products });
 
             Assert.AreEqual(OperationStatusCode.InvalidData, result.StatusCode);
         }
@@ -76,7 +76,7 @@ namespace TechnicalAssignment.Services.Tests
         [TestMethod]
         public async Task CreateOrderAsync_ShouldReturnInvalidDataStatusCode_WhenProductsListIsEmpty()
         {
-            var result = await service.CreateOrderAsync(new OrderWithProductsDto { Id = 1, Products = new List<OrderProductDto>() });
+            var result = await service.CreateOrderAsync(new OrderRequestWithProductsDto { Id = 1, Products = new List<OrderRequestProductDto>() });
 
             Assert.AreEqual(OperationStatusCode.InvalidData, result.StatusCode);
         }
@@ -84,9 +84,9 @@ namespace TechnicalAssignment.Services.Tests
         [TestMethod]
         public async Task CreateOrderAsync_ShouldReturnAlreadyExistsStatusCode_WhenOrderIdAlreadyExists()
         {
-            unitOfWorkMock.OrdersRepositoryMock.Setup(r => r.GetAsync(It.IsAny<int>())).ReturnsAsync(new OrderWithProductsDto());
+            unitOfWorkMock.OrdersRepositoryMock.Setup(r => r.GetAsync(It.IsAny<int>())).ReturnsAsync(new OrderRequestWithProductsDto());
 
-            var orderWithProducts = CreateValidOrderWithProducts();
+            var orderWithProducts = CreateValidOrderRequestWithProducts();
 
             var result = await service.CreateOrderAsync(orderWithProducts);
 
@@ -94,24 +94,44 @@ namespace TechnicalAssignment.Services.Tests
         }
 
         [TestMethod]
-        public async Task CreateOrderAsync_ShouldReturnOkStatusCode_WhenProductsListIsEmpty()
+        public async Task CreateOrderAsync_ShouldReturnOkStatusCode_WhenOrderIsValid()
         {
-            var products = new List<OrderProductDto>();
-            products.Add(new OrderProductDto { Id = 1, Quantity = 1 });
+            unitOfWorkMock.OrdersRepositoryMock.Setup(r => r.CreateAsync(It.IsAny<OrderRequestWithProductsDto>())).ReturnsAsync(CreateValidOrderResponseWithProducts());
+            unitOfWorkMock.OrdersRepositoryMock.Setup(r => r.GetOrderProductsAsync(It.IsAny<int>())).ReturnsAsync(CreateValidOrderProducts());
 
-            var result = await service.CreateOrderAsync(new OrderWithProductsDto { Id = 1, Products = products });
+            var result = await service.CreateOrderAsync(CreateValidOrderRequestWithProducts());
 
             Assert.AreEqual(OperationStatusCode.Ok, result.StatusCode);
         }
 
-        private OrderWithProductsDto CreateValidOrderWithProducts()
+        private OrderRequestWithProductsDto CreateValidOrderRequestWithProducts()
+        {
+            var products = new List<OrderRequestProductDto>();
+            products.Add(new OrderRequestProductDto { Id = 1, Quantity = 1 });
+            products.Add(new OrderRequestProductDto { Id = 2, Quantity = 2 });
+            products.Add(new OrderRequestProductDto { Id = 3, Quantity = 3 });
+
+            return new OrderRequestWithProductsDto { Id = 1, Products = products };
+        }
+
+        private OrderResponseWithProductsDto CreateValidOrderResponseWithProducts()
+        {
+            var products = new List<OrderResponseProductDto>();
+            products.Add(new OrderResponseProductDto { Id = 1, Quantity = 1, RequiredWidth = 10f });
+            products.Add(new OrderResponseProductDto { Id = 2, Quantity = 2, RequiredWidth = 20f });
+            products.Add(new OrderResponseProductDto { Id = 3, Quantity = 3, RequiredWidth = 30f });
+
+            return new OrderResponseWithProductsDto { Id = 1 };
+        }
+
+        private IEnumerable<OrderProductDto> CreateValidOrderProducts()
         {
             var products = new List<OrderProductDto>();
-            products.Add(new OrderProductDto { Id = 1, Quantity = 1 });
-            products.Add(new OrderProductDto { Id = 2, Quantity = 2 });
-            products.Add(new OrderProductDto { Id = 3, Quantity = 3 });
+            products.Add(new OrderProductDto { Id = 1, Quantity = 1, StackSize = 1 });
+            products.Add(new OrderProductDto { Id = 2, Quantity = 2, StackSize = 2 });
+            products.Add(new OrderProductDto { Id = 3, Quantity = 3, StackSize = 3 });
 
-            return new OrderWithProductsDto { Id = 1, Products = products };
+            return products;
         }
     }
 }

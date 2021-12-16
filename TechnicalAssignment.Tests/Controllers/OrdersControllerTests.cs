@@ -30,7 +30,7 @@ namespace TechnicalAssignment.Tests.Controllers
         {
             service.Setup(s => s.GetOrderWithProductsAsync(It.IsAny<int>())).ReturnsAsync(() => null);
 
-            ActionResult<OrderWithProductsDto> actionResult = await controller.GetAsync(1);
+            ActionResult<OrderRequestWithProductsDto> actionResult = await controller.GetAsync(1);
 
             Assert.IsNotNull(actionResult);
             Assert.IsNull(actionResult.Value);
@@ -44,9 +44,9 @@ namespace TechnicalAssignment.Tests.Controllers
         [TestMethod]
         public async Task GetAsync_ShouldReturnOrder_WhenOrderIdExists()
         {
-            service.Setup(s => s.GetOrderWithProductsAsync(It.IsAny<int>())).ReturnsAsync(() => new OrderWithProductsDto());
+            service.Setup(s => s.GetOrderWithProductsAsync(It.IsAny<int>())).ReturnsAsync(() => new OrderRequestWithProductsDto());
 
-            ActionResult<OrderWithProductsDto> actionResult = await controller.GetAsync(1);
+            ActionResult<OrderRequestWithProductsDto> actionResult = await controller.GetAsync(1);
 
             Assert.IsNotNull(actionResult);
             Assert.IsNull(actionResult.Value);
